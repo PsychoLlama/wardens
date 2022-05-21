@@ -1,5 +1,6 @@
 import type Resource from './resource';
 import { resources, ownership } from './state';
+import wrap from './proxy';
 
 /** Provision a resource and return its external API. */
 export async function mount<Api extends object, InitArgs>(
@@ -10,12 +11,7 @@ export async function mount<Api extends object, InitArgs>(
   await resource.enter(params);
 
   const api = resource.exports();
-
-  // The API proxy is the weirdest part of the framework. It prevents objects
-  // from being used after they're deallocated, guarantees against memory
-  // leaks (all references are freed), and provides a unique index identity
-  // for internal state.
-  const { proxy, revoke } = Proxy.revocable(api, {});
+  const { proxy, revoke } = wrap(api);
 
   resources.set(proxy, {
     resource,
