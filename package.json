@@ -9,7 +9,8 @@
   "license": "MIT",
   "private": true,
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "prepare": "tsc && vite build",
@@ -83,6 +84,7 @@
     "prettier": "2.6.2",
     "ts-jest": "28.0.2",
     "typescript": "4.6.4",
-    "vite": "2.9.9"
+    "vite": "2.9.9",
+    "vite-dts": "^1.0.4"
   }
 }
