@@ -1,10 +1,6 @@
 import { mount, unmount } from './allocation';
 import { ownership } from './state';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ExternalControls<ArbitraryResource extends Resource<any, unknown>> =
-  ArbitraryResource extends Resource<infer Api, unknown> ? Api : never;
-
 /**
  * Represents an arbitrary stateful resource that is asynchronously provisioned
  * and destroyed. Resources can own other resources, and destroying a parent
@@ -59,3 +55,9 @@ export default abstract class Resource<
   /** Returns an external API to the parent resource. */
   abstract exports(): ExternalApi;
 }
+
+/** The `exports` type for a resource. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ExternalControls<ArbitraryResource extends Resource<any, any>> =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ArbitraryResource extends Resource<infer Api, any> ? Api : never;
