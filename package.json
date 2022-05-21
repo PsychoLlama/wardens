@@ -2,9 +2,87 @@
   "name": "bobcat",
   "version": "0.0.0",
   "description": "A framework for resource management",
-  "main": "dist/index.js",
+  "main": "./dist/bobcat.umd.js",
+  "module": "./dist/bobcat.es.js",
   "repository": "git@github.com:PsychoLlama/bobcat.git",
   "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare": "tsc && vite build",
+    "test": "./bin/run-tests",
+    "test:lint": "eslint src --color",
+    "test:unit": "jest --color",
+    "test:fmt": "prettier --check src --color",
+    "dev": "vite build --watch"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/bobcat.umd.js",
+      "import": "./dist/bobcat.es.js"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.tsx?": [
+      "eslint",
+      "prettier --check"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "overrides": [
+      {
+        "files": [
+          "./**/__tests__/*.ts{x,}"
+        ],
+        "env": {
+          "jest": true
+        },
+        "rules": {
+          "@typescript-eslint/no-explicit-any": "off"
+        }
+      }
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-unused-vars": "error",
+      "no-prototype-builtins": "off"
+    }
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
+    "eslint": "^8.16.0",
+    "husky": "^8.0.1",
+    "jest": "^28.1.0",
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2",
+    "ts-jest": "^28.0.2",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9"
+  }
 }
