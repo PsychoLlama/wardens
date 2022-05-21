@@ -30,6 +30,7 @@ export async function mount<Api extends object, InitArgs>(
  * reference.
  *
  * @todo Add type marker to catch cases where the wrong object is unmounted.
+ * @todo Recursively unmount children.
  */
 export async function unmount(api: object) {
   const entry = resources.get(api);
