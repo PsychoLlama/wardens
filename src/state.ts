@@ -12,3 +12,9 @@ interface RevokableResource {
 
 /** Maps an external API back to the resource that created it. */
 export const resources = new WeakMap<object, RevokableResource>();
+
+/** Maps a resource to all the other resources it provisioned. */
+export const ownership = new WeakMap<
+  Resource<object, unknown>,
+  Array<object>
+>();

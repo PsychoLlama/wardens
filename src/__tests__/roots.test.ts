@@ -43,5 +43,45 @@ describe('roots', () => {
 
       await expect(unmount(api)).resolves.not.toThrow();
     });
+
+    it('automatically unmounts all children', async () => {
+      const leave = jest.fn();
+      class Child extends Resource<number[]> {
+        exports = () => [];
+        leave = leave;
+      }
+
+      class Parent extends Resource<string[]> {
+        exports = () => [];
+        async enter() {
+          await this.allocate(Child, null);
+        }
+      }
+
+      const parent = await mount(Parent, null);
+      await unmount(parent);
+
+      expect(leave).toHaveBeenCalled();
+    });
+
+    it('throws an error if any of the children fail to unmount', async () => {
+      const error = new Error('Testing unmount errors');
+      class Child extends Resource<number[]> {
+        exports = () => [];
+        async leave() {
+          throw error;
+        }
+      }
+
+      class Parent extends Resource<string[]> {
+        exports = () => [];
+        async enter() {
+          await this.allocate(Child, null);
+        }
+      }
+
+      const parent = await mount(Parent, null);
+      await expect(unmount(parent)).rejects.toThrow(error);
+    });
   });
 });

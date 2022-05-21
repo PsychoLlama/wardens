@@ -1,4 +1,5 @@
 import { mount, unmount } from './roots';
+import { ownership } from './state';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ExternalControls<ArbitraryResource extends Resource<any, unknown>> =
@@ -14,6 +15,11 @@ export default abstract class Resource<
   InitArgs = void,
 > {
   #resources = new WeakSet<object>();
+  #children: Array<object> = [];
+
+  constructor() {
+    ownership.set(this, this.#children);
+  }
 
   /** A hook that gets called when the resource is created. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,6 +39,7 @@ export default abstract class Resource<
   ): Promise<Api> {
     const api = await mount(Child, params);
     this.#resources.add(api);
+    this.#children.push(api);
 
     return api;
   }
