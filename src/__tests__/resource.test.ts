@@ -1,5 +1,5 @@
 import Resource, { type ExternalControls } from '../resource';
-import { mount } from '../roots';
+import { mount } from '../allocation';
 
 describe('Resource', () => {
   class Test extends Resource<Record<string, never>> {

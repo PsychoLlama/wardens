@@ -1,7 +1,7 @@
 import Resource from '../resource';
-import { mount, unmount } from '../roots';
+import { mount, unmount } from '../allocation';
 
-describe('roots', () => {
+describe('allocation', () => {
   describe('mount', () => {
     it('allocates the resource', async () => {
       const params = { test: 'init-args' };

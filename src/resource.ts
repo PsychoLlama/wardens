@@ -1,4 +1,4 @@
-import { mount, unmount } from './roots';
+import { mount, unmount } from './allocation';
 import { ownership } from './state';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
