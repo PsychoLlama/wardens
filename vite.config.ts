@@ -7,7 +7,7 @@ export default defineConfig({
     lib: {
       entry: path.join(__dirname, './src/index.ts'),
       name: 'bobcat',
-      fileName: (format) => `bobcat.${format}.js`,
+      fileName: (format: string) => `bobcat.${format}.js`,
     },
     rollupOptions: {
       external: builtinModules,
