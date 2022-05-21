@@ -1,0 +1,10 @@
+{
+  "name": "bobcat",
+  "version": "0.0.0",
+  "description": "A framework for resource management",
+  "main": "dist/index.js",
+  "repository": "git@github.com:PsychoLlama/bobcat.git",
+  "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
