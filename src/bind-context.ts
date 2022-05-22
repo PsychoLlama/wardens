@@ -25,7 +25,15 @@ export default function bindContext<T extends object>(value: T) {
       // a consistent function identity.
       if (typeof value === 'function') {
         if (methodBindings.has(value) === false) {
-          methodBindings.set(value, value.bind(target));
+          const methodBinding = value.bind(target);
+
+          // Copy static function properties.
+          Object.defineProperties(
+            methodBinding,
+            Object.getOwnPropertyDescriptors(value),
+          );
+
+          methodBindings.set(value, methodBinding);
         }
 
         return methodBindings.get(value);

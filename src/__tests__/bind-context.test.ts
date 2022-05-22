@@ -34,4 +34,14 @@ describe('Method rebinding', () => {
 
     expect(proxy.add).toBe(proxy.add);
   });
+
+  it('copies extended function properties', () => {
+    const proxy = bind({ mock: jest.fn() });
+
+    // Mocks use state held on the function itself. This must be added to the
+    // bound functions as well.
+    expect(proxy.mock).not.toHaveBeenCalled();
+    proxy.mock();
+    expect(proxy.mock).toHaveBeenCalledTimes(1);
+  });
 });
