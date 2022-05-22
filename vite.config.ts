@@ -8,8 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.join(__dirname, './src/index.ts'),
-      name: 'bobcat',
-      fileName: (format: string) => `bobcat.${format}.js`,
+      name: 'wardens',
+      fileName: (format: string) => `wardens.${format}.js`,
     },
     rollupOptions: {
       external: builtinModules,

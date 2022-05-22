@@ -1,10 +1,10 @@
 {
-  "name": "bobcat",
+  "name": "wardens",
   "version": "0.0.0",
   "description": "A framework for resource management",
-  "main": "./dist/bobcat.umd.js",
-  "module": "./dist/bobcat.es.js",
-  "repository": "git@github.com:PsychoLlama/bobcat.git",
+  "main": "./dist/wardens.umd.js",
+  "module": "./dist/wardens.es.js",
+  "repository": "git@github.com:PsychoLlama/wardens.git",
   "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
   "license": "MIT",
   "private": true,
@@ -22,8 +22,8 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/bobcat.umd.js",
-      "import": "./dist/bobcat.es.js"
+      "require": "./dist/wardens.umd.js",
+      "import": "./dist/wardens.es.js"
     }
   },
   "husky": {
