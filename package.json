@@ -7,7 +7,6 @@
   "repository": "git@github.com:PsychoLlama/wardens.git",
   "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
   "license": "MIT",
-  "private": true,
   "files": [
     "dist",
     "src"
