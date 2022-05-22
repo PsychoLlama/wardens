@@ -11,6 +11,15 @@
     "dist",
     "src"
   ],
+  "keywords": [
+    "resource",
+    "management",
+    "manager",
+    "server",
+    "lifetimes",
+    "hierarchy",
+    "framework"
+  ],
   "scripts": {
     "prepare": "tsc && vite build",
     "test": "./bin/run-tests",
