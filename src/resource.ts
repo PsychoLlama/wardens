@@ -6,10 +6,7 @@ import { ownership } from './state';
  * and destroyed. Resources can own other resources, and destroying a parent
  * first tears down the children.
  */
-export default abstract class Resource<
-  ExternalApi extends object,
-  InitArgs = void,
-> {
+export default abstract class Resource<Controls extends object, Config = void> {
   #resources = new WeakSet<object>();
   #children: Array<object> = [];
 
@@ -19,7 +16,7 @@ export default abstract class Resource<
 
   /** A hook that gets called when the resource is created. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async enter(_params: InitArgs) {
+  async enter(_config: Config) {
     return;
   }
 
@@ -29,35 +26,35 @@ export default abstract class Resource<
   }
 
   /** Provision an owned resource and make sure it doesn't outlive us. */
-  async allocate<Api extends object, Params>(
-    Child: new () => Resource<Api, Params>,
-    params: Params,
-  ): Promise<Api> {
-    const api = await mount(Child, params);
-    this.#resources.add(api);
-    this.#children.push(api);
+  async allocate<ChildControls extends object, ChildConfig>(
+    Child: new () => Resource<ChildControls, ChildConfig>,
+    config: ChildConfig,
+  ): Promise<ChildControls> {
+    const controls = await mount(Child, config);
+    this.#resources.add(controls);
+    this.#children.push(controls);
 
-    return api;
+    return controls;
   }
 
   /**
    * Tear down a resource. Happens automatically when resource owners are
    * deallocated.
    */
-  async deallocate(api: object) {
-    if (!this.#resources.has(api)) {
+  async deallocate(resource: object) {
+    if (!this.#resources.has(resource)) {
       throw new Error('You do not own this resource.');
     }
 
-    return unmount(api);
+    return unmount(resource);
   }
 
   /** Returns an external API to the parent resource. */
-  abstract exports(): ExternalApi;
+  abstract exports(): Controls;
 }
 
 /** The `exports` type for a resource. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ExternalControls<ArbitraryResource extends Resource<any, any>> =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ArbitraryResource extends Resource<infer Api, any> ? Api : never;
+  ArbitraryResource extends Resource<infer Controls, any> ? Controls : never;

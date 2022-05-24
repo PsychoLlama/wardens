@@ -3,15 +3,15 @@ import { resources, ownership } from './state';
 import wrap from './proxy';
 
 /** Provision a resource and return its external API. */
-export async function mount<Api extends object, InitArgs>(
-  Subtype: new () => Resource<Api, InitArgs>,
-  params: InitArgs,
-): Promise<Api> {
-  const resource = new Subtype();
-  await resource.enter(params);
+export async function mount<Controls extends object, Config>(
+  Entity: new () => Resource<Controls, Config>,
+  config: Config,
+): Promise<Controls> {
+  const resource = new Entity();
+  await resource.enter(config);
 
-  const api = resource.exports();
-  const { proxy, revoke } = wrap(api);
+  const controls = resource.exports();
+  const { proxy, revoke } = wrap(controls);
 
   resources.set(proxy, {
     resource,
@@ -27,12 +27,12 @@ export async function mount<Api extends object, InitArgs>(
  *
  * @todo Add type marker to catch cases where the wrong object is unmounted.
  */
-export async function unmount(api: object) {
-  const entry = resources.get(api);
+export async function unmount(controls: object) {
+  const entry = resources.get(controls);
 
   if (entry) {
     // Instantly delete to prevent race conditions.
-    resources.delete(api);
+    resources.delete(controls);
 
     // Free all references.
     entry.revoke();
@@ -41,7 +41,7 @@ export async function unmount(api: object) {
     ownership.delete(entry.resource);
 
     // Recursively close out the children first...
-    const recursiveUnmounts = children.map((api) => unmount(api));
+    const recursiveUnmounts = children.map((controls) => unmount(controls));
     const results = await Promise.allSettled(recursiveUnmounts);
 
     // Then close the parent.

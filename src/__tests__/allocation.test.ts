@@ -4,7 +4,7 @@ import { mount, unmount } from '../allocation';
 describe('allocation', () => {
   describe('mount', () => {
     it('allocates the resource', async () => {
-      const params = { test: 'init-args' };
+      const config = { test: 'init-args' };
       const enter = jest.fn();
 
       class Test extends Resource<{ test: boolean }, { test: string }> {
@@ -12,8 +12,8 @@ describe('allocation', () => {
         enter = enter;
       }
 
-      await expect(mount(Test, params)).resolves.toEqual({ test: true });
-      expect(enter).toHaveBeenCalledWith(params);
+      await expect(mount(Test, config)).resolves.toEqual({ test: true });
+      expect(enter).toHaveBeenCalledWith(config);
     });
   });
 
@@ -26,10 +26,10 @@ describe('allocation', () => {
         leave = leave;
       }
 
-      const api = await mount(Test, null);
+      const test = await mount(Test, null);
 
       expect(leave).not.toHaveBeenCalled();
-      await expect(unmount(api)).resolves.not.toThrow();
+      await expect(unmount(test)).resolves.not.toThrow();
       expect(leave).toHaveBeenCalled();
     });
 
@@ -38,10 +38,10 @@ describe('allocation', () => {
         exports = () => [];
       }
 
-      const api = await mount(Test, null);
-      await unmount(api);
+      const test = await mount(Test, null);
+      await unmount(test);
 
-      await expect(unmount(api)).resolves.not.toThrow();
+      await expect(unmount(test)).resolves.not.toThrow();
     });
 
     it('automatically unmounts all children', async () => {
