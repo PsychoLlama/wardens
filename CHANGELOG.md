@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - The second generic parameter of `Resource` was a config parameter, but now it's an argument tuple.
+- The `ExternalControls` utility type was renamed to `Controls`.
 
 ## [0.1.0]
 

@@ -58,9 +58,3 @@ export default abstract class Resource<
   /** Returns an external API to the parent resource. */
   abstract exports(): Controls;
 }
-
-/** The `exports` type for a resource. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ExternalControls<ArbitraryResource extends Resource<any, any>> =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ArbitraryResource extends Resource<infer Controls, any> ? Controls : never;

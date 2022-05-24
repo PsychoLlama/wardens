@@ -1,5 +1,6 @@
-import Resource, { type ExternalControls } from '../resource';
+import Resource from '../resource';
 import { mount } from '../allocation';
+import { type Controls } from '../types';
 
 describe('Resource', () => {
   class Test extends Resource<Record<string, never>> {
@@ -18,9 +19,9 @@ describe('Resource', () => {
       exports = () => ({ child: true });
     }
 
-    class Parent extends Resource<ExternalControls<Child>> {
+    class Parent extends Resource<Controls<Child>> {
       exports = () => this.child;
-      child!: ExternalControls<Child>;
+      child!: Controls<Child>;
 
       async enter() {
         this.child = await this.allocate(Child);
@@ -40,7 +41,7 @@ describe('Resource', () => {
 
     class Parent extends Resource<{ parent: boolean }> {
       exports = () => ({ parent: true });
-      child!: ExternalControls<Child>;
+      child!: Controls<Child>;
 
       async enter() {
         const child = await this.allocate(Child);
