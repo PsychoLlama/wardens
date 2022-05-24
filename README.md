@@ -34,7 +34,7 @@ class Worker extends Resource<Thread> {
 Now define a pool that creates and manages workers:
 
 ```typescript
-class WorkerPool extends Resource<Controls, Config> {
+class WorkerPool extends Resource<Controls, [Config]> {
   threads!: Array<Thread> = [];
 
   async enter({ poolSize }: Config) {

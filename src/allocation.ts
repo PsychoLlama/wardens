@@ -3,12 +3,15 @@ import { resources, ownership } from './state';
 import wrap from './proxy';
 
 /** Provision a resource and return its external API. */
-export async function mount<Controls extends object, Config>(
-  Entity: new () => Resource<Controls, Config>,
-  config: Config,
+export async function mount<
+  Controls extends object,
+  Args extends Array<unknown>,
+>(
+  Entity: new () => Resource<Controls, Args>,
+  ...args: Args
 ): Promise<Controls> {
   const resource = new Entity();
-  await resource.enter(config);
+  await resource.enter(...args);
 
   const controls = resource.exports();
   const { proxy, revoke } = wrap(controls);

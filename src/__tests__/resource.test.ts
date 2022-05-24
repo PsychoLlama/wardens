@@ -23,11 +23,11 @@ describe('Resource', () => {
       child!: ExternalControls<Child>;
 
       async enter() {
-        this.child = await this.allocate(Child, null);
+        this.child = await this.allocate(Child);
       }
     }
 
-    await expect(mount(Parent, null)).resolves.toEqual({ child: true });
+    await expect(mount(Parent)).resolves.toEqual({ child: true });
   });
 
   it('can deallocate child resources on demand', async () => {
@@ -43,17 +43,17 @@ describe('Resource', () => {
       child!: ExternalControls<Child>;
 
       async enter() {
-        const child = await this.allocate(Child, null);
+        const child = await this.allocate(Child);
         await this.deallocate(child);
       }
     }
 
-    await expect(mount(Parent, null)).resolves.toEqual({ parent: true });
+    await expect(mount(Parent)).resolves.toEqual({ parent: true });
     expect(leave).toHaveBeenCalled();
   });
 
   it('fails to destroy resources owned by someone else', async () => {
-    const test = await mount(Test, null);
+    const test = await mount(Test);
 
     class Sneaky extends Resource<string[]> {
       exports = () => [];
@@ -62,6 +62,6 @@ describe('Resource', () => {
       }
     }
 
-    await expect(mount(Sneaky, null)).rejects.toThrow(/do not own/i);
+    await expect(mount(Sneaky)).rejects.toThrow(/do not own/i);
   });
 });

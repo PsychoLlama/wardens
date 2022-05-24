@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- `mount(...)` and `allocate(...)` no longer require a config argument if the resource doesn't explicitly define one.
+
+### Added
+
+- `enter(...)` now supports variable arguments.
+
+### Changed
+
+- The second generic parameter of `Resource` was a config parameter, but now it's an argument tuple.
+
 ## [0.1.0]
 
 ### Added

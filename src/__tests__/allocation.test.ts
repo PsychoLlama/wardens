@@ -7,7 +7,7 @@ describe('allocation', () => {
       const config = { test: 'init-args' };
       const enter = jest.fn();
 
-      class Test extends Resource<{ test: boolean }, { test: string }> {
+      class Test extends Resource<{ test: boolean }, [{ test: string }]> {
         exports = () => ({ test: true });
         enter = enter;
       }
@@ -26,7 +26,7 @@ describe('allocation', () => {
         leave = leave;
       }
 
-      const test = await mount(Test, null);
+      const test = await mount(Test);
 
       expect(leave).not.toHaveBeenCalled();
       await expect(unmount(test)).resolves.not.toThrow();
@@ -38,7 +38,7 @@ describe('allocation', () => {
         exports = () => [];
       }
 
-      const test = await mount(Test, null);
+      const test = await mount(Test);
       await unmount(test);
 
       await expect(unmount(test)).resolves.not.toThrow();
@@ -54,11 +54,11 @@ describe('allocation', () => {
       class Parent extends Resource<string[]> {
         exports = () => [];
         async enter() {
-          await this.allocate(Child, null);
+          await this.allocate(Child);
         }
       }
 
-      const parent = await mount(Parent, null);
+      const parent = await mount(Parent);
       await unmount(parent);
 
       expect(leave).toHaveBeenCalled();
@@ -76,11 +76,11 @@ describe('allocation', () => {
       class Parent extends Resource<string[]> {
         exports = () => [];
         async enter() {
-          await this.allocate(Child, null);
+          await this.allocate(Child);
         }
       }
 
-      const parent = await mount(Parent, null);
+      const parent = await mount(Parent);
       await expect(unmount(parent)).rejects.toThrow(error);
     });
   });
