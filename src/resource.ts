@@ -29,7 +29,7 @@ export default abstract class Resource<
   }
 
   /** Provision an owned resource and make sure it doesn't outlive us. */
-  async allocate<
+  protected async allocate<
     ChildControls extends object,
     ChildArgs extends Array<unknown> = [],
   >(
@@ -47,7 +47,7 @@ export default abstract class Resource<
    * Tear down a resource. Happens automatically when resource owners are
    * deallocated.
    */
-  async deallocate(resource: object) {
+  protected async deallocate(resource: object) {
     if (!this.#resources.has(resource)) {
       throw new Error('You do not own this resource.');
     }

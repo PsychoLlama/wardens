@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- TypeScript: prevent use of `allocate(...)`/`deallocate(...)` outside a resource subclass.
+
 ## [0.2.0] - 2022-05-24
 
 ### Fixed
