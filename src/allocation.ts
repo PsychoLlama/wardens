@@ -1,17 +1,23 @@
 import type Resource from './resource';
 import { resources, ownership } from './state';
 import wrap from './proxy';
+import { MountableResource, UnmountableResource } from './types';
 
 /** Provision a resource and return its external API. */
 export async function mount<
   Controls extends object,
   Args extends Array<unknown>,
 >(
-  Entity: new () => Resource<Controls, Args>,
+  Entity: new () =>
+    | MountableResource<Controls, Args>
+    | Resource<Controls, Args>,
   ...args: Args
 ): Promise<Controls> {
   const resource = new Entity();
-  await resource.enter(...args);
+
+  if (mountable(resource)) {
+    await resource.enter(...args);
+  }
 
   const controls = resource.exports();
   const { proxy, revoke } = wrap(controls);
@@ -48,7 +54,9 @@ export async function unmount(controls: object) {
     const results = await Promise.allSettled(recursiveUnmounts);
 
     // Then close the parent.
-    await entry.resource.leave();
+    if (unmountable(entry.resource)) {
+      await entry.resource.leave();
+    }
 
     // Fail loudly if any of the children couldn't be deallocated.
     results.forEach((result) => {
@@ -57,4 +65,16 @@ export async function unmount(controls: object) {
       }
     });
   }
+}
+
+function mountable(
+  resource: MountableResource<object, Array<unknown>> | Resource<object>,
+): resource is MountableResource<object, Array<unknown>> {
+  return 'enter' in resource;
+}
+
+function unmountable(
+  resource: UnmountableResource<object> | Resource<object>,
+): resource is UnmountableResource<object> {
+  return 'leave' in resource;
 }
