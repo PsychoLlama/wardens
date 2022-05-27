@@ -1,7 +1,7 @@
 import type Resource from './resource';
 
 interface RevokableResource {
-  resource: Resource<object, Array<unknown>>;
+  resource: Resource<object>;
 
   /**
    * Destroys outer references to the API and frees the object for garbage
@@ -14,7 +14,4 @@ interface RevokableResource {
 export const resources = new WeakMap<object, RevokableResource>();
 
 /** Maps a resource to all the other resources it provisioned. */
-export const ownership = new WeakMap<
-  Resource<object, Array<unknown>>,
-  Array<object>
->();
+export const ownership = new WeakMap<Resource<object>, Array<object>>();

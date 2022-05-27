@@ -7,13 +7,6 @@ describe('Resource', () => {
     exports = () => ({});
   }
 
-  it('implements default enter/leave methods', async () => {
-    const test = new Test();
-
-    await expect(test.enter()).resolves.not.toThrow();
-    await expect(test.leave()).resolves.not.toThrow();
-  });
-
   it('can spawn children of its own', async () => {
     class Child extends Resource<{ child: boolean }> {
       exports = () => ({ child: true });

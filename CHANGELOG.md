@@ -8,7 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- TypeScript: prevent use of `allocate(...)`/`deallocate(...)` outside a resource subclass.
+- Prevent use of `allocate(...)`/`deallocate(...)` outside a resource subclass.
+
+### Removed
+
+- Second type parameter to `Resource` is gone. Arguments to `enter(...)` are now inferred.
+- No more default implementations for `enter(...)`/`leave(...)` on resources.
 
 ## [0.2.0] - 2022-05-24
 

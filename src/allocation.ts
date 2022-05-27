@@ -8,9 +8,7 @@ export async function mount<
   Controls extends object,
   Args extends Array<unknown>,
 >(
-  Entity: new () =>
-    | MountableResource<Controls, Args>
-    | Resource<Controls, Args>,
+  Entity: new () => MountableResource<Controls, Args> | Resource<Controls>,
   ...args: Args
 ): Promise<Controls> {
   const resource = new Entity();

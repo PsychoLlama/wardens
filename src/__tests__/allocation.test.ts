@@ -5,9 +5,11 @@ describe('allocation', () => {
   describe('mount', () => {
     it('allocates the resource', async () => {
       const config = { test: 'init-args' };
-      const enter = jest.fn();
+      const enter = jest.fn((config: { test: string }) => {
+        config;
+      });
 
-      class Test extends Resource<{ test: boolean }, [{ test: string }]> {
+      class Test extends Resource<{ test: boolean }> {
         exports = () => ({ test: true });
         enter = enter;
       }
@@ -19,7 +21,7 @@ describe('allocation', () => {
 
   describe('unmount', () => {
     it('deallocates the resource', async () => {
-      const leave = jest.fn();
+      const leave = jest.fn<void, []>();
 
       class Test extends Resource<Array<string>> {
         exports = () => [];
