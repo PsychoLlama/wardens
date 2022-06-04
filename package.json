@@ -1,6 +1,6 @@
 {
   "name": "wardens",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A framework for resource management",
   "main": "./dist/wardens.umd.js",
   "module": "./dist/wardens.es.js",
