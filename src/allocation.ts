@@ -14,7 +14,7 @@ export async function mount<
   const resource = new Entity();
 
   if (mountable(resource)) {
-    await resource.enter(...args);
+    await resource.create(...args);
   }
 
   const controls = resource.exports();
@@ -53,7 +53,7 @@ export async function unmount(controls: object) {
 
     // Then close the parent.
     if (unmountable(entry.resource)) {
-      await entry.resource.leave();
+      await entry.resource.destroy();
     }
 
     // Fail loudly if any of the children couldn't be deallocated.
@@ -68,11 +68,11 @@ export async function unmount(controls: object) {
 function mountable(
   resource: MountableResource<object, Array<unknown>> | Resource<object>,
 ): resource is MountableResource<object, Array<unknown>> {
-  return 'enter' in resource;
+  return 'create' in resource;
 }
 
 function unmountable(
   resource: UnmountableResource<object> | Resource<object>,
 ): resource is UnmountableResource<object> {
-  return 'leave' in resource;
+  return 'destroy' in resource;
 }

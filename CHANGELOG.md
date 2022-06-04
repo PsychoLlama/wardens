@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Prevent use of `allocate(...)`/`deallocate(...)` outside a resource subclass.
+- Renamed `enter()` to `create()`.
+- Renamed `leave()` to `destroy()`.
 
 ### Removed
 

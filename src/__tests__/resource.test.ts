@@ -16,7 +16,7 @@ describe('Resource', () => {
       exports = () => this.child;
       child!: Controls<Child>;
 
-      async enter() {
+      async create() {
         this.child = await this.allocate(Child);
       }
     }
@@ -25,25 +25,25 @@ describe('Resource', () => {
   });
 
   it('can deallocate child resources on demand', async () => {
-    const leave = jest.fn();
+    const destroy = jest.fn();
 
     class Child extends Resource<{ child: boolean }> {
       exports = () => ({ child: true });
-      leave = leave;
+      destroy = destroy;
     }
 
     class Parent extends Resource<{ parent: boolean }> {
       exports = () => ({ parent: true });
       child!: Controls<Child>;
 
-      async enter() {
+      async create() {
         const child = await this.allocate(Child);
         await this.deallocate(child);
       }
     }
 
     await expect(mount(Parent)).resolves.toEqual({ parent: true });
-    expect(leave).toHaveBeenCalled();
+    expect(destroy).toHaveBeenCalled();
   });
 
   it('fails to destroy resources owned by someone else', async () => {
@@ -51,7 +51,7 @@ describe('Resource', () => {
 
     class Sneaky extends Resource<string[]> {
       exports = () => [];
-      async enter() {
+      async create() {
         await this.deallocate(test);
       }
     }

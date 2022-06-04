@@ -5,34 +5,34 @@ describe('allocation', () => {
   describe('mount', () => {
     it('allocates the resource', async () => {
       const config = { test: 'init-args' };
-      const enter = jest.fn((config: { test: string }) => {
+      const create = jest.fn((config: { test: string }) => {
         config;
       });
 
       class Test extends Resource<{ test: boolean }> {
         exports = () => ({ test: true });
-        enter = enter;
+        create = create;
       }
 
       await expect(mount(Test, config)).resolves.toEqual({ test: true });
-      expect(enter).toHaveBeenCalledWith(config);
+      expect(create).toHaveBeenCalledWith(config);
     });
   });
 
   describe('unmount', () => {
     it('deallocates the resource', async () => {
-      const leave = jest.fn<void, []>();
+      const destroy = jest.fn<void, []>();
 
       class Test extends Resource<Array<string>> {
         exports = () => [];
-        leave = leave;
+        destroy = destroy;
       }
 
       const test = await mount(Test);
 
-      expect(leave).not.toHaveBeenCalled();
+      expect(destroy).not.toHaveBeenCalled();
       await expect(unmount(test)).resolves.not.toThrow();
-      expect(leave).toHaveBeenCalled();
+      expect(destroy).toHaveBeenCalled();
     });
 
     it('survives if the resource is already deallocated', async () => {
@@ -47,15 +47,15 @@ describe('allocation', () => {
     });
 
     it('automatically unmounts all children', async () => {
-      const leave = jest.fn();
+      const destroy = jest.fn();
       class Child extends Resource<number[]> {
         exports = () => [];
-        leave = leave;
+        destroy = destroy;
       }
 
       class Parent extends Resource<string[]> {
         exports = () => [];
-        async enter() {
+        async create() {
           await this.allocate(Child);
         }
       }
@@ -63,21 +63,21 @@ describe('allocation', () => {
       const parent = await mount(Parent);
       await unmount(parent);
 
-      expect(leave).toHaveBeenCalled();
+      expect(destroy).toHaveBeenCalled();
     });
 
     it('throws an error if any of the children fail to unmount', async () => {
       const error = new Error('Testing unmount errors');
       class Child extends Resource<number[]> {
         exports = () => [];
-        async leave() {
+        async destroy() {
           throw error;
         }
       }
 
       class Parent extends Resource<string[]> {
         exports = () => [];
-        async enter() {
+        async create() {
           await this.allocate(Child);
         }
       }

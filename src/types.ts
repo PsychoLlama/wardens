@@ -9,11 +9,11 @@ export interface MountableResource<
   InitArgs extends Array<unknown>,
 > extends Resource<Controls> {
   /** A hook that gets called when the resource is created. */
-  enter(...args: InitArgs): Promise<void>;
+  create(...args: InitArgs): Promise<void>;
 }
 
 export interface UnmountableResource<Controls extends object>
   extends Resource<Controls> {
   /** A hook that gets called when the resource is destroyed. */
-  leave(): Promise<void>;
+  destroy(): Promise<void>;
 }

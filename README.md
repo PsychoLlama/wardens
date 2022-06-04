@@ -17,12 +17,12 @@ class Worker extends Resource<Thread> {
   thread!: Thread;
 
   // Called when the resource is created
-  async enter() {
+  async create() {
     this.thread = await spawn()
   }
 
   // Called when the resource is destroyed
-  async leave() {
+  async destroy() {
     this.thread.close()
   }
 
@@ -37,7 +37,7 @@ Now define a pool that creates and manages workers:
 class WorkerPool extends Resource<Controls> {
   threads!: Array<Thread> = [];
 
-  async enter({ poolSize }: Config) {
+  async create({ poolSize }: Config) {
     const promises = Array(poolSize).fill().map(() => {
       return this.allocate(Worker)
     })
