@@ -1,6 +1,6 @@
 import Resource from '../resource';
-import { mount } from '../allocation';
-import { type Controls } from '../types';
+import { create } from '../allocation';
+import { Controls } from '../types';
 
 describe('Resource', () => {
   class Test extends Resource<Record<string, never>> {
@@ -21,15 +21,15 @@ describe('Resource', () => {
       }
     }
 
-    await expect(mount(Parent)).resolves.toEqual({ child: true });
+    await expect(create(Parent)).resolves.toEqual({ child: true });
   });
 
   it('can deallocate child resources on demand', async () => {
-    const destroy = jest.fn();
+    const spy = jest.fn();
 
     class Child extends Resource<{ child: boolean }> {
       exports = () => ({ child: true });
-      destroy = destroy;
+      destroy = spy;
     }
 
     class Parent extends Resource<{ parent: boolean }> {
@@ -42,12 +42,12 @@ describe('Resource', () => {
       }
     }
 
-    await expect(mount(Parent)).resolves.toEqual({ parent: true });
-    expect(destroy).toHaveBeenCalled();
+    await expect(create(Parent)).resolves.toEqual({ parent: true });
+    expect(spy).toHaveBeenCalled();
   });
 
   it('fails to destroy resources owned by someone else', async () => {
-    const test = await mount(Test);
+    const test = await create(Test);
 
     class Sneaky extends Resource<string[]> {
       exports = () => [];
@@ -56,6 +56,6 @@ describe('Resource', () => {
       }
     }
 
-    await expect(mount(Sneaky)).rejects.toThrow(/do not own/i);
+    await expect(create(Sneaky)).rejects.toThrow(/do not own/i);
   });
 });

@@ -1,4 +1,4 @@
-import { mount, unmount } from './allocation';
+import { create, destroy } from './allocation';
 import { ownership } from './state';
 import { MountableResource } from './types';
 
@@ -25,7 +25,7 @@ export default abstract class Resource<Controls extends object> {
       | Resource<ChildControls>,
     ...args: ChildArgs
   ): Promise<ChildControls> {
-    const controls: ChildControls = await mount(Child, ...args);
+    const controls: ChildControls = await create(Child, ...args);
     this.#resources.add(controls);
     this.#children.push(controls);
 
@@ -41,7 +41,7 @@ export default abstract class Resource<Controls extends object> {
       throw new Error('You do not own this resource.');
     }
 
-    return unmount(resource);
+    return destroy(resource);
   }
 
   /** Returns an external API to the parent resource. */

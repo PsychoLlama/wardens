@@ -1,38 +1,38 @@
 import Resource from '../resource';
-import { mount, unmount } from '../allocation';
+import { create, destroy } from '../allocation';
 
 describe('allocation', () => {
-  describe('mount', () => {
+  describe('create', () => {
     it('allocates the resource', async () => {
       const config = { test: 'init-args' };
-      const create = jest.fn((config: { test: string }) => {
+      const spy = jest.fn((config: { test: string }) => {
         config;
       });
 
       class Test extends Resource<{ test: boolean }> {
         exports = () => ({ test: true });
-        create = create;
+        create = spy;
       }
 
-      await expect(mount(Test, config)).resolves.toEqual({ test: true });
-      expect(create).toHaveBeenCalledWith(config);
+      await expect(create(Test, config)).resolves.toEqual({ test: true });
+      expect(spy).toHaveBeenCalledWith(config);
     });
   });
 
-  describe('unmount', () => {
+  describe('destroy', () => {
     it('deallocates the resource', async () => {
-      const destroy = jest.fn<void, []>();
+      const spy = jest.fn<void, []>();
 
       class Test extends Resource<Array<string>> {
         exports = () => [];
-        destroy = destroy;
+        destroy = spy;
       }
 
-      const test = await mount(Test);
+      const test = await create(Test);
 
-      expect(destroy).not.toHaveBeenCalled();
-      await expect(unmount(test)).resolves.not.toThrow();
-      expect(destroy).toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
+      await expect(destroy(test)).resolves.not.toThrow();
+      expect(spy).toHaveBeenCalled();
     });
 
     it('survives if the resource is already deallocated', async () => {
@@ -40,17 +40,17 @@ describe('allocation', () => {
         exports = () => [];
       }
 
-      const test = await mount(Test);
-      await unmount(test);
+      const test = await create(Test);
+      await destroy(test);
 
-      await expect(unmount(test)).resolves.not.toThrow();
+      await expect(destroy(test)).resolves.not.toThrow();
     });
 
     it('automatically unmounts all children', async () => {
-      const destroy = jest.fn();
+      const spy = jest.fn();
       class Child extends Resource<number[]> {
         exports = () => [];
-        destroy = destroy;
+        destroy = spy;
       }
 
       class Parent extends Resource<string[]> {
@@ -60,14 +60,14 @@ describe('allocation', () => {
         }
       }
 
-      const parent = await mount(Parent);
-      await unmount(parent);
+      const parent = await create(Parent);
+      await destroy(parent);
 
-      expect(destroy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
     });
 
-    it('throws an error if any of the children fail to unmount', async () => {
-      const error = new Error('Testing unmount errors');
+    it('throws an error if any of the children fail to close', async () => {
+      const error = new Error('Testing resource destruction errors');
       class Child extends Resource<number[]> {
         exports = () => [];
         async destroy() {
@@ -82,8 +82,8 @@ describe('allocation', () => {
         }
       }
 
-      const parent = await mount(Parent);
-      await expect(unmount(parent)).rejects.toThrow(error);
+      const parent = await create(Parent);
+      await expect(destroy(parent)).rejects.toThrow(error);
     });
   });
 });

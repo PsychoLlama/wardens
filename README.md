@@ -38,7 +38,7 @@ class WorkerPool extends Resource<Controls> {
   threads!: Array<Thread> = [];
 
   async create({ poolSize }: Config) {
-    const promises = Array(poolSize).fill().map(() => {
+    const promises = Array.from({ length: poolSize }, () => {
       return this.allocate(Worker)
     })
 
@@ -53,10 +53,10 @@ class WorkerPool extends Resource<Controls> {
 }
 ```
 
-Finally, mount it:
+Finally, create the pool:
 
 ```typescript
-const pool = await mount(WorkerPool, {
+const pool = await create(WorkerPool, {
   poolSize: cpus().length,
 })
 
@@ -68,7 +68,7 @@ pool.doSomethingElse()
 The magic of this framework is that resources never outlive their owners. If you tear down the pool, it will deallocate everything beneath it first:
 
 ```typescript
-await unmount(pool)
+await destroy(pool)
 
 // [info] closing worker
 // [info] closing worker

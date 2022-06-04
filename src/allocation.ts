@@ -4,7 +4,7 @@ import wrap from './proxy';
 import { MountableResource, UnmountableResource } from './types';
 
 /** Provision a resource and return its external API. */
-export async function mount<
+export async function create<
   Controls extends object,
   Args extends Array<unknown>,
 >(
@@ -34,7 +34,7 @@ export async function mount<
  *
  * @todo Add type marker to catch cases where the wrong object is unmounted.
  */
-export async function unmount(controls: object) {
+export async function destroy(controls: object) {
   const entry = resources.get(controls);
 
   if (entry) {
@@ -48,7 +48,7 @@ export async function unmount(controls: object) {
     ownership.delete(entry.resource);
 
     // Recursively close out the children first...
-    const recursiveUnmounts = children.map((controls) => unmount(controls));
+    const recursiveUnmounts = children.map((controls) => destroy(controls));
     const results = await Promise.allSettled(recursiveUnmounts);
 
     // Then close the parent.
