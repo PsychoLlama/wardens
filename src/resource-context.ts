@@ -14,24 +14,27 @@ export default class ResourceContext {
   }
 
   /** Provision an owned resource and make sure it doesn't outlive us. */
-  public async create<
+  public create = async <
     Factory extends
       | ParametrizedResourceFactory<Controls, Args>
       | ResourceFactory<Controls>,
     Controls extends object,
     Args extends Array<unknown>,
-  >(factory: Factory, ...args: Args): Promise<Controls> {
+  >(
+    factory: Factory,
+    ...args: Args
+  ): Promise<Controls> => {
     const controls = await create(factory, ...args);
     this.#resources.add(controls);
 
     return controls;
-  }
+  };
 
   /**
    * Tear down a resource. Happens automatically when resource owners are
    * deallocated.
    */
-  async destroy(resource: object) {
+  public destroy = async (resource: object) => {
     if (!this.#resources.has(resource)) {
       throw new Error('You do not own this resource.');
     }
@@ -41,5 +44,5 @@ export default class ResourceContext {
     } finally {
       this.#resources.delete(resource);
     }
-  }
+  };
 }

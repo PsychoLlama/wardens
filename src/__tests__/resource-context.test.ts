@@ -49,4 +49,15 @@ describe('ResourceContext', () => {
 
     await expect(create(Sneaky)).rejects.toThrow(/do not own/i);
   });
+
+  it('binds create/destroy handlers to the class instance', async () => {
+    async function Allocator({ create, destroy }: ResourceContext) {
+      const test = await create(Test);
+      await destroy(test);
+
+      return { value: [] };
+    }
+
+    await expect(create(Allocator)).resolves.not.toThrow();
+  });
 });
