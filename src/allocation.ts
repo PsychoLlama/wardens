@@ -1,27 +1,28 @@
-import type Resource from './resource';
-import { resources, ownership } from './state';
+import { resources } from './state';
 import wrap from './proxy';
-import { MountableResource, UnmountableResource } from './types';
+import ResourceContext from './resource-context';
+import { ResourceFactory, ParametrizedResourceFactory } from './types';
 
 /** Provision a resource and return its external API. */
 export async function create<
   Controls extends object,
   Args extends Array<unknown>,
 >(
-  Entity: new () => MountableResource<Controls, Args> | Resource<Controls>,
+  provision:
+    | ParametrizedResourceFactory<Controls, Args>
+    | ResourceFactory<Controls>,
   ...args: Args
 ): Promise<Controls> {
-  const resource = new Entity();
+  const children: Set<object> = new Set();
+  const context = new ResourceContext(children);
+  const resource = await provision(context, ...args);
 
-  if (mountable(resource)) {
-    await resource.create(...args);
-  }
-
-  const controls = resource.exports();
+  const controls = resource.value;
   const { proxy, revoke } = wrap(controls);
 
   resources.set(proxy, {
     resource,
+    children,
     revoke,
   });
 
@@ -44,15 +45,12 @@ export async function destroy(controls: object) {
     // Free all references.
     entry.revoke();
 
-    const children = ownership.get(entry.resource)!;
-    ownership.delete(entry.resource);
-
     // Recursively close out the children first...
-    const recursiveUnmounts = children.map((controls) => destroy(controls));
+    const recursiveUnmounts = Array.from(entry.children).map(destroy);
     const results = await Promise.allSettled(recursiveUnmounts);
 
     // Then close the parent.
-    if (unmountable(entry.resource)) {
+    if (entry.resource.destroy) {
       await entry.resource.destroy();
     }
 
@@ -63,16 +61,4 @@ export async function destroy(controls: object) {
       }
     });
   }
-}
-
-function mountable(
-  resource: MountableResource<object, Array<unknown>> | Resource<object>,
-): resource is MountableResource<object, Array<unknown>> {
-  return 'create' in resource;
-}
-
-function unmountable(
-  resource: UnmountableResource<object> | Resource<object>,
-): resource is UnmountableResource<object> {
-  return 'destroy' in resource;
 }

@@ -1,19 +1,26 @@
-import type Resource from './resource';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type ResourceContext from './resource-context';
 
-/** The `exports` type for a resource. */
-export type Controls<ArbitraryResource extends Resource<object>> =
-  ArbitraryResource extends Resource<infer Controls> ? Controls : never;
-
-export interface MountableResource<
-  Controls extends object,
-  InitArgs extends Array<unknown>,
-> extends Resource<Controls> {
-  /** A hook that gets called when the resource is created. */
-  create(...args: InitArgs): Promise<void>;
+/**
+ * Represents an arbitrary stateful resource that is asynchronously provisioned
+ * and destroyed. Resources can own other resources, and destroying a parent
+ * first tears down the children.
+ */
+export interface ResourceFactory<Controls extends object> {
+  (resource: ResourceContext): Promise<Resource<Controls>>;
 }
 
-export interface UnmountableResource<Controls extends object>
-  extends Resource<Controls> {
+export interface ParametrizedResourceFactory<
+  Controls extends object,
+  Args extends Array<unknown>,
+> {
+  (resource: ResourceContext, ...args: Args): Promise<Resource<Controls>>;
+}
+
+export interface Resource<Value extends object> {
+  /** The resource value returned by `create(...)`. */
+  value: Value;
+
   /** A hook that gets called when the resource is destroyed. */
-  destroy(): Promise<void>;
+  destroy?(): Promise<unknown> | unknown;
 }
