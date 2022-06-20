@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Support for provisioning resources through async functions instead of `Resource` subclasses. This offers better type safety around null conditions.
+- A new `Resource` utility type is exported. The new functional API expects you to return this interface.
+
+### Removed
+
+- The `Resource` abstract class was removed. Use async functions instead.
+- The `Controls<...>` utility type was removed. Import the type you need from the module instead.
+
 ## [0.3.0] - 2022-06-04
 
 ### Changed
