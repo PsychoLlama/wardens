@@ -14,14 +14,10 @@ export default class ResourceContext {
   }
 
   /** Provision an owned resource and make sure it doesn't outlive us. */
-  public create = async <
-    Factory extends
+  public create = async <Controls extends object, Args extends Array<unknown>>(
+    factory:
       | ParametrizedResourceFactory<Controls, Args>
       | ResourceFactory<Controls>,
-    Controls extends object,
-    Args extends Array<unknown>,
-  >(
-    factory: Factory,
     ...args: Args
   ): Promise<Controls> => {
     const controls = await create(factory, ...args);
