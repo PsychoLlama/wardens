@@ -13,43 +13,33 @@ This library is designed for applications that dynamically provision and dealloc
 Here's an example: let's say you've got a thread pool, one per CPU. Each thread gets a `Resource`, a small wrapper that hooks into setup and teardown controls.
 
 ```typescript
-class Worker extends Resource<Thread> {
-  thread!: Thread;
+async function Worker() {
+  const thread = await spawn()
 
-  // Called when the resource is created
-  async create() {
-    this.thread = await spawn()
+  return {
+    // The value returned after initialization completes
+    value: thread,
+
+    // Called when the resource is destroyed
+    destroy: () => thread.close(),
   }
-
-  // Called when the resource is destroyed
-  async destroy() {
-    this.thread.close()
-  }
-
-  // The value returned after initialization completes
-  exports = () => this.thread
 }
 ```
 
 Now define a pool that creates and manages workers:
 
 ```typescript
-class WorkerPool extends Resource<Controls> {
-  threads!: Array<Thread> = [];
+async function WorkerPool({ create }: ResourceContext, config: { poolSize: number }) {
+  const promises = Array(config.poolSize).fill(Worker).map(create)
+  const threads = await Promise.all(promises)
 
-  async create({ poolSize }: Config) {
-    const promises = Array.from({ length: poolSize }, () => {
-      return this.allocate(Worker)
-    })
-
-    this.threads = await Promise.all(promises)
+  return {
+    // ... External API goes here ...
+    value: {
+      doSomeWork() {},
+      doSomethingElse() {},
+    }
   }
-
-  // ... External API goes here ...
-  exports = (): Controls => ({
-    doSomeWork() {},
-    doSomethingElse() {},
-  })
 }
 ```
 
