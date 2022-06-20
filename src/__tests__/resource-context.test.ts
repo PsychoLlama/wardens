@@ -1,6 +1,5 @@
 import ResourceContext from '../resource-context';
 import { create } from '../allocation';
-import type { Controls, Resource } from '../types';
 
 describe('ResourceContext', () => {
   async function Test() {
@@ -12,13 +11,11 @@ describe('ResourceContext', () => {
       value: { child: true },
     });
 
-    const Parent = async (
-      resource: ResourceContext,
-    ): Promise<Resource<Controls<typeof Child>>> => {
-      return { value: await resource.create(Child, null) };
+    const Parent = async (resource: ResourceContext) => {
+      return { value: await resource.create(Child) };
     };
 
-    await expect(create(Parent, null)).resolves.toEqual({ child: true });
+    await expect(create(Parent)).resolves.toEqual({ child: true });
   });
 
   it('can deallocate child resources on demand', async () => {
@@ -30,7 +27,7 @@ describe('ResourceContext', () => {
     });
 
     const Parent = async (resource: ResourceContext) => {
-      const child = await resource.create(Child, null);
+      const child = await resource.create(Child);
       await resource.destroy(child);
 
       return {
@@ -38,18 +35,18 @@ describe('ResourceContext', () => {
       };
     };
 
-    await expect(create(Parent, null)).resolves.toEqual({ parent: true });
+    await expect(create(Parent)).resolves.toEqual({ parent: true });
     expect(spy).toHaveBeenCalled();
   });
 
   it('fails to destroy resources owned by someone else', async () => {
-    const test = await create(Test, null);
+    const test = await create(Test);
 
     const Sneaky = async (resource: ResourceContext) => {
       await resource.destroy(test);
       return { value: {} };
     };
 
-    await expect(create(Sneaky, null)).rejects.toThrow(/do not own/i);
+    await expect(create(Sneaky)).rejects.toThrow(/do not own/i);
   });
 });

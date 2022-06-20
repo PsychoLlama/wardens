@@ -24,7 +24,7 @@ describe('allocation', () => {
         destroy: spy,
       });
 
-      const test = await create(Test, null);
+      const test = await create(Test);
 
       expect(spy).not.toHaveBeenCalled();
       await expect(destroy(test)).resolves.not.toThrow();
@@ -34,7 +34,7 @@ describe('allocation', () => {
     it('survives if the resource is already deallocated', async () => {
       const Test = async () => ({ value: [] });
 
-      const test = await create(Test, null);
+      const test = await create(Test);
       await destroy(test);
 
       await expect(destroy(test)).resolves.not.toThrow();
@@ -44,11 +44,11 @@ describe('allocation', () => {
       const spy = jest.fn();
       const Child = async () => ({ value: [], destroy: spy });
       async function Parent(resource: ResourceContext) {
-        await resource.create(Child, null);
+        await resource.create(Child);
         return { value: [] };
       }
 
-      const parent = await create(Parent, null);
+      const parent = await create(Parent);
       await destroy(parent);
 
       expect(spy).toHaveBeenCalled();
@@ -64,11 +64,11 @@ describe('allocation', () => {
       });
 
       const Parent = async (resource: ResourceContext) => {
-        await resource.create(Child, null);
+        await resource.create(Child);
         return { value: [] };
       };
 
-      const parent = await create(Parent, null);
+      const parent = await create(Parent);
       await expect(destroy(parent)).rejects.toThrow(error);
     });
   });

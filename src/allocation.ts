@@ -4,15 +4,18 @@ import ResourceContext from './resource-context';
 import { ResourceFactory, ParametrizedResourceFactory } from './types';
 
 /** Provision a resource and return its external API. */
-export async function create<Controls extends object, Args>(
+export async function create<
+  Controls extends object,
+  Args extends Array<unknown>,
+>(
   provision:
     | ParametrizedResourceFactory<Controls, Args>
     | ResourceFactory<Controls>,
-  config: Args,
+  ...args: Args
 ): Promise<Controls> {
   const children: Set<object> = new Set();
   const context = new ResourceContext(children);
-  const resource = await provision(context, config);
+  const resource = await provision(context, ...args);
 
   const controls = resource.value;
   const { proxy, revoke } = wrap(controls);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type ResourceContext from './resource-context';
 
 /**
@@ -9,8 +10,11 @@ export interface ResourceFactory<Controls extends object> {
   (resource: ResourceContext): Promise<Resource<Controls>>;
 }
 
-export interface ParametrizedResourceFactory<Controls extends object, Config> {
-  (resource: ResourceContext, config: Config): Promise<Resource<Controls>>;
+export interface ParametrizedResourceFactory<
+  Controls extends object,
+  Args extends Array<unknown>,
+> {
+  (resource: ResourceContext, ...args: Args): Promise<Resource<Controls>>;
 }
 
 export interface Resource<Value extends object> {
@@ -20,7 +24,3 @@ export interface Resource<Value extends object> {
   /** A hook that gets called when the resource is destroyed. */
   destroy?(): Promise<unknown> | unknown;
 }
-
-/** The exported `value` type for a resource. */
-export type Controls<ArbitraryResource extends ResourceFactory<object>> =
-  ArbitraryResource extends ResourceFactory<infer Controls> ? Controls : never;
