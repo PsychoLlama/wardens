@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.1] - 2023-01-14
+
+### Fixed
+
+- Newer versions of TypeScript complained about signatures in `bindContext(...)`.
+
 ## [0.4.0] - 2022-06-19
 
 ### Added
@@ -54,7 +60,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - `mount`/`unmount` hooks to provision resources
 - `allocate`/`deallocate` for creating hierarchies of resources
 
-[Unreleased]: https://github.com/PsychoLlama/wardens/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/PsychoLlama/wardens/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/PsychoLlama/wardens/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/PsychoLlama/wardens/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/PsychoLlama/wardens/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/PsychoLlama/wardens/compare/v0.1.0...v0.2.0
