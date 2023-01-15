@@ -15,7 +15,7 @@
  *
  */
 export default function bindContext<T extends object>(value: T) {
-  const methodBindings = new WeakMap<Fn, Fn>();
+  const methodBindings = new WeakMap<object, AnyMethod>();
 
   return new Proxy(value, {
     get(target, property) {
@@ -48,5 +48,4 @@ export default function bindContext<T extends object>(value: T) {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Fn = (...args: any) => any;
+type AnyMethod = (...args: Array<unknown>) => unknown;
