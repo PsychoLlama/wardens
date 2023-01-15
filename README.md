@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Wardens</h1>
   <p>A tiny framework for managing resources.</p>
-  <img alt="Build status" src="https://img.shields.io/github/workflow/status/PsychoLlama/wardens/Test/main" />
+  <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/PsychoLlama/wardens/test.yml?branch=main" />
   <img alt="TypeScript" src="https://img.shields.io/npm/types/wardens" />
   <img alt="npm version" src="https://img.shields.io/npm/v/wardens" />
 </div>
@@ -14,7 +14,7 @@ Here's an example: let's say you've got a thread pool, one per CPU. Each thread 
 
 ```typescript
 async function Worker() {
-  const thread = await spawn()
+  const thread = await spawn();
 
   return {
     // The value returned after initialization completes
@@ -22,24 +22,27 @@ async function Worker() {
 
     // Called when the resource is destroyed
     destroy: () => thread.close(),
-  }
+  };
 }
 ```
 
 Now define a pool that creates and manages workers:
 
 ```typescript
-async function WorkerPool({ create }: ResourceContext, config: { poolSize: number }) {
-  const promises = Array(config.poolSize).fill(Worker).map(create)
-  const threads = await Promise.all(promises)
+async function WorkerPool(
+  { create }: ResourceContext,
+  config: { poolSize: number },
+) {
+  const promises = Array(config.poolSize).fill(Worker).map(create);
+  const threads = await Promise.all(promises);
 
   return {
     // ... External API goes here ...
     value: {
       doSomeWork() {},
       doSomethingElse() {},
-    }
-  }
+    },
+  };
 }
 ```
 
@@ -48,17 +51,17 @@ Finally, create the pool:
 ```typescript
 const pool = await create(WorkerPool, {
   poolSize: cpus().length,
-})
+});
 
 // Provisioned and ready to go!
-pool.doSomeWork()
-pool.doSomethingElse()
+pool.doSomeWork();
+pool.doSomethingElse();
 ```
 
 The magic of this framework is that resources never outlive their owners. If you tear down the pool, it will deallocate everything beneath it first:
 
 ```typescript
-await destroy(pool)
+await destroy(pool);
 
 // [info] closing worker
 // [info] closing worker
