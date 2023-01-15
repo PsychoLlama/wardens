@@ -4,6 +4,7 @@
   "description": "A framework for resource management",
   "main": "./dist/wardens.umd.js",
   "module": "./dist/wardens.es.js",
+  "types": "./src/index.ts",
   "repository": "git@github.com:PsychoLlama/wardens.git",
   "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
   "license": "MIT",
@@ -31,7 +32,7 @@
   "exports": {
     ".": {
       "require": "./dist/wardens.umd.js",
-      "import": "./dist/wardens.es.js"
+      "import": "./dist/wardens.mjs"
     }
   },
   "husky": {
@@ -92,7 +93,6 @@
     "prettier": "2.8.3",
     "ts-jest": "29.0.5",
     "typescript": "4.8.4",
-    "vite": "3.0.9",
-    "vite-dts": "1.0.4"
+    "vite": "3.0.9"
   }
 }
