@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Wardens is now published with ESM (`type=module`). It should be backwards compatible.
+
 ## [0.4.1] - 2023-01-14
 
 ### Fixed

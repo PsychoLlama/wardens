@@ -6,16 +6,11 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.join(__dirname, './src/index.ts'),
-      name: 'wardens',
       fileName: 'wardens',
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: builtinModules,
-      output: {
-        globals: Object.fromEntries(
-          builtinModules.map((modName) => [modName, modName]),
-        ),
-      },
     },
   },
 });

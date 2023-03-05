@@ -2,12 +2,19 @@
   "name": "wardens",
   "version": "0.4.1",
   "description": "A framework for resource management",
-  "main": "./dist/wardens.umd.js",
-  "module": "./dist/wardens.es.js",
+  "type": "module",
+  "main": "./dist/wardens.cjs",
+  "module": "./dist/wardens.js",
   "types": "./src/index.ts",
   "repository": "git@github.com:PsychoLlama/wardens.git",
   "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "require": "./dist/wardens.cjs",
+      "import": "./dist/wardens.js"
+    }
+  },
   "files": [
     "dist",
     "src"
@@ -28,12 +35,6 @@
     "test:unit": "jest --color",
     "test:fmt": "prettier --check src --color",
     "dev": "vite build --watch"
-  },
-  "exports": {
-    ".": {
-      "require": "./dist/wardens.umd.js",
-      "import": "./dist/wardens.mjs"
-    }
   },
   "husky": {
     "hooks": {
