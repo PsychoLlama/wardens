@@ -19,7 +19,7 @@ describe('ResourceContext', () => {
   });
 
   it('can deallocate child resources on demand', async () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
 
     const Child = async () => ({
       value: { child: true },

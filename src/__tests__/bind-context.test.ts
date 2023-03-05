@@ -36,7 +36,7 @@ describe('Method rebinding', () => {
   });
 
   it('copies extended function properties', () => {
-    const proxy = bind({ mock: jest.fn() });
+    const proxy = bind({ mock: vi.fn() });
 
     // Mocks use state held on the function itself. This must be added to the
     // bound functions as well.

@@ -5,7 +5,7 @@ describe('allocation', () => {
   describe('create', () => {
     it('allocates the resource', async () => {
       const config = { test: 'init-args' };
-      const Test = jest.fn(
+      const Test = vi.fn(
         async (_resource: ResourceContext, config: { test: string }) => ({
           value: config,
         }),
@@ -18,7 +18,7 @@ describe('allocation', () => {
 
   describe('destroy', () => {
     it('deallocates the resource', async () => {
-      const spy = jest.fn<void, []>();
+      const spy = vi.fn<[], void>();
       const Test = async () => ({
         value: {},
         destroy: spy,
@@ -41,7 +41,7 @@ describe('allocation', () => {
     });
 
     it('automatically unmounts all children', async () => {
-      const spy = jest.fn();
+      const spy = vi.fn();
       const Child = async () => ({ value: [], destroy: spy });
       async function Parent(resource: ResourceContext) {
         await resource.create(Child);
