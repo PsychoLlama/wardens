@@ -1,10 +1,20 @@
 {
-  description = "Wardens, a framework for resource management";
+  description = "Development environment";
 
   outputs = { self, nixpkgs }:
-    with nixpkgs.lib; {
-      devShell = genAttrs systems.flakeExposed (system:
-        let pkgs = import nixpkgs { inherit system; };
-        in pkgs.mkShell { nativeBuildInputs = with pkgs; [ yarn nodejs ]; });
+    let inherit (nixpkgs) lib;
+
+    in {
+      devShell = lib.genAttrs lib.systems.flakeExposed (system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+          nodejs = pkgs.nodejs-18_x;
+
+        in pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            nodejs
+            (yarn.override { inherit nodejs; })
+          ];
+        });
     };
 }
