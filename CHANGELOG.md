@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Wardens is now published with ESM (`type=module`). It should be backwards compatible.
+- Now `destroy(...)` throws if you pass an object that wasn't constructed with `create(...)`.
+
+### Fixed
+
+- If a resource fails while initializing, now all intermediate child resources are destroyed as well.
 
 ## [0.4.1] - 2023-01-14
 
