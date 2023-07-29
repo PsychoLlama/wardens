@@ -70,6 +70,12 @@ describe('allocation', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('throws an error if the object is not a resource', async () => {
+      await expect(destroy({})).rejects.toThrow(
+        'Cannot destroy object. It is not a resource.',
+      );
+    });
+
     it('survives if the resource is already deallocated', async () => {
       const Test = async () => ({ value: [] });
 

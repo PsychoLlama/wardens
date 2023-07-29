@@ -1,4 +1,4 @@
-import { resources } from './state';
+import { resources, constructed } from './state';
 import wrap from './proxy';
 import ResourceContext from './resource-context';
 import { ResourceFactory, ParametrizedResourceFactory } from './types';
@@ -44,6 +44,7 @@ export const create = async <
   const controls = resource.value;
   const { proxy, revoke } = wrap(controls);
 
+  constructed.add(proxy);
   resources.set(proxy, {
     resource,
     children,
@@ -56,10 +57,12 @@ export const create = async <
 /**
  * Tear down the resource and all its children, permanently destroying the
  * reference.
- *
- * @todo Add type marker to catch cases where the wrong object is unmounted.
  */
 export const destroy = async (controls: object) => {
+  if (!constructed.has(controls)) {
+    throw new Error('Cannot destroy object. It is not a resource.');
+  }
+
   const entry = resources.get(controls);
 
   if (entry) {
