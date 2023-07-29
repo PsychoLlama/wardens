@@ -60,4 +60,16 @@ describe('ResourceContext', () => {
 
     await expect(create(Allocator)).resolves.not.toThrow();
   });
+
+  it('indicates if a resource was already destroyed', async () => {
+    async function Allocator(resource: ResourceContext) {
+      const test = await resource.create(Test);
+      await resource.destroy(test);
+      await resource.destroy(test);
+
+      return { value: [] };
+    }
+
+    await expect(create(Allocator)).rejects.toThrow(/already destroyed/i);
+  });
 });

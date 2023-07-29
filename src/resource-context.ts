@@ -7,6 +7,7 @@ import { ResourceFactory, ParametrizedResourceFactory } from './types';
  * track of ownership and lifetimes.
  */
 export default class ResourceContext {
+  #destroyed = new WeakSet<object>();
   #resources: Set<object>;
 
   constructor(ownedResources: Set<object>) {
@@ -31,14 +32,16 @@ export default class ResourceContext {
    * deallocated.
    */
   public destroy = async (resource: object) => {
+    if (this.#destroyed.has(resource)) {
+      throw new Error('Resource already destroyed.');
+    }
+
     if (!this.#resources.has(resource)) {
       throw new Error('You do not own this resource.');
     }
 
-    try {
-      await destroy(resource);
-    } finally {
-      this.#resources.delete(resource);
-    }
+    this.#resources.delete(resource);
+    this.#destroyed.add(resource);
+    await destroy(resource);
   };
 }
