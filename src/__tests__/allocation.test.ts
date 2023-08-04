@@ -154,5 +154,67 @@ describe('allocation', () => {
         failures: [childError, childError],
       });
     });
+
+    it('ensures child resources outlive their consumers', async () => {
+      const Child = async () => ({ value: [1] });
+      const Parent = async (resource: ResourceContext) => {
+        const child = await resource.create(Child);
+        return {
+          value: [],
+          destroy() {
+            // The `child` resource must still be usable here.
+            expect(child).toHaveLength(1);
+          },
+        };
+      };
+
+      const parent = await create(Parent);
+      await destroy(parent);
+    });
+
+    it('destroys child resources even if the parent fails to close', async () => {
+      const spy = vi.fn();
+      const Child = async () => ({ value: [], destroy: spy });
+      const Parent = async (resource: ResourceContext) => {
+        await resource.create(Child);
+        return {
+          value: [],
+          destroy() {
+            throw new Error('Testing parent teardown errors');
+          },
+        };
+      };
+
+      const parent = await create(Parent);
+      await expect(destroy(parent)).rejects.toThrow();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('aggregates errors if the child resource fails to close', async () => {
+      const parentError = new Error('Testing parent resource aborts');
+      const childError = new Error('Testing child resource aborts');
+
+      const Child = async () => ({
+        value: [],
+        destroy() {
+          throw childError;
+        },
+      });
+
+      const Parent = async (resource: ResourceContext) => {
+        await resource.create(Child);
+        return {
+          value: [],
+          destroy() {
+            throw parentError;
+          },
+        };
+      };
+
+      const parent = await create(Parent);
+      await expect(destroy(parent)).rejects.toMatchObject({
+        failures: [parentError, childError],
+      });
+    });
   });
 });

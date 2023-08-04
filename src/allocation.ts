@@ -72,21 +72,33 @@ export const destroy = async (controls: object) => {
     // Free all references.
     entry.revoke();
 
-    // Recursively close out the children first...
+    let parentDeallocation: PromiseSettledResult<void> = {
+      status: 'fulfilled',
+      value: undefined,
+    };
+
+    // Try to close the parent resource...
+    if (entry.resource.destroy) {
+      try {
+        await entry.resource.destroy();
+      } catch (error) {
+        parentDeallocation = { status: 'rejected', reason: error };
+      }
+    }
+
+    // Then recursively close out the children...
     const recursiveUnmounts = Array.from(entry.children).reverse().map(destroy);
     const deallocations = await Promise.allSettled(recursiveUnmounts);
-    const failures = deallocations.filter(
-      (result): result is PromiseRejectedResult => result.status === 'rejected',
-    );
+    const failures = [parentDeallocation]
+      .concat(deallocations)
+      .filter(
+        (result): result is PromiseRejectedResult =>
+          result.status === 'rejected',
+      );
 
     // Fail loudly if any of the children couldn't be deallocated.
     if (failures.length) {
       throw reduceToSingleError(failures.map((failure) => failure.reason));
-    }
-
-    // Then close the parent.
-    if (entry.resource.destroy) {
-      await entry.resource.destroy();
     }
   }
 };

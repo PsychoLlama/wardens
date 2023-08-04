@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 
 - If a resource fails while initializing, now all intermediate child resources are destroyed as well.
+- If a resource fails while being destroyed, now its child resources are destroyed as well.
 
 ## [0.4.1] - 2023-01-14
 
