@@ -99,10 +99,7 @@ const reduceToSingleError = (errors: Array<Error>, options?: ErrorOptions) => {
 
 /** Happens when 2 or more child resources cannot be destroyed. */
 class BulkDestroyError extends Error {
-  constructor(
-    public failures: Array<unknown>,
-    options?: ErrorOptions,
-  ) {
+  constructor(public failures: Array<unknown>, options?: ErrorOptions) {
     super(
       'Some resources could not be destroyed. See the `failures` property for details.',
       options,
