@@ -1,6 +1,6 @@
 import type { Resource } from './types';
 
-interface RevokableResource {
+export interface RevokableResource {
   resource: Resource<object>;
 
   /** All the resources this resource personally allocated. */
@@ -11,6 +11,12 @@ interface RevokableResource {
    * collection.
    */
   revoke(): void;
+
+  /**
+   * A flag preventing the resource context from provisioning new child
+   * resources after the parent is destroyed.
+   */
+  curfew: { enforced: boolean };
 }
 
 /** Maps an external API back to the resource that created it. */

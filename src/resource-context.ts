@@ -1,4 +1,5 @@
 import { create, destroy } from './allocation';
+import { RevokableResource } from './state';
 import { ResourceFactory, ParametrizedResourceFactory } from './types';
 
 /**
@@ -9,9 +10,14 @@ import { ResourceFactory, ParametrizedResourceFactory } from './types';
 export default class ResourceContext {
   #destroyed = new WeakSet<object>();
   #resources: Set<object>;
+  #freeze: RevokableResource['curfew'];
 
-  constructor(ownedResources: Set<object>) {
+  constructor(
+    ownedResources: Set<object>,
+    freeze: RevokableResource['curfew'],
+  ) {
     this.#resources = ownedResources;
+    this.#freeze = freeze;
   }
 
   /** Provision an owned resource and make sure it doesn't outlive us. */
@@ -21,6 +27,10 @@ export default class ResourceContext {
       | ResourceFactory<Controls>,
     ...args: Args
   ): Promise<Controls> => {
+    if (this.#freeze.enforced) {
+      throw new Error('Cannot create new resources after teardown.');
+    }
+
     const controls = await create(factory, ...args);
     this.#resources.add(controls);
 

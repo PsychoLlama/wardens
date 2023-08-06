@@ -13,8 +13,9 @@ export const create = async <
     | ResourceFactory<Controls>,
   ...args: Args
 ): Promise<Controls> => {
+  const curfew = { enforced: false };
   const children: Set<object> = new Set();
-  const context = new ResourceContext(children);
+  const context = new ResourceContext(children, curfew);
   let resource: Awaited<ReturnType<typeof provision>>;
 
   try {
@@ -46,6 +47,7 @@ export const create = async <
 
   constructed.add(proxy);
   resources.set(proxy, {
+    curfew,
     resource,
     children,
     revoke,
@@ -58,16 +60,16 @@ export const create = async <
  * Tear down the resource and all its children, permanently destroying the
  * reference.
  */
-export const destroy = async (controls: object) => {
-  if (!constructed.has(controls)) {
+export const destroy = async (handle: object) => {
+  if (!constructed.has(handle)) {
     throw new Error('Cannot destroy object. It is not a resource.');
   }
 
-  const entry = resources.get(controls);
+  const entry = resources.get(handle);
 
   if (entry) {
     // Instantly delete to prevent race conditions.
-    resources.delete(controls);
+    resources.delete(handle);
 
     // Free all references.
     entry.revoke();
@@ -86,7 +88,11 @@ export const destroy = async (controls: object) => {
       }
     }
 
-    // Then recursively close out the children...
+    // The resource is closed. Prevent new child resources before we start
+    // closing down the children.
+    entry.curfew.enforced = true;
+
+    // Recursively close out the children...
     const recursiveUnmounts = Array.from(entry.children).reverse().map(destroy);
     const deallocations = await Promise.allSettled(recursiveUnmounts);
     const failures = [parentDeallocation]

@@ -1,5 +1,6 @@
 import type ResourceContext from '../resource-context';
 import { create, destroy } from '../allocation';
+import bindContext from '../bind-context';
 
 describe('allocation', () => {
   describe('create', () => {
@@ -215,6 +216,21 @@ describe('allocation', () => {
       await expect(destroy(parent)).rejects.toMatchObject({
         failures: [parentError, childError],
       });
+    });
+
+    it('guards against creating new resources after teardown', async () => {
+      const Child = async () => ({ value: [] });
+      const Parent = async (resource: ResourceContext) => ({
+        value: bindContext(resource),
+      });
+
+      const parent = await create(Parent);
+      const { create: resourceCreate } = parent;
+      await destroy(parent);
+
+      await expect(resourceCreate(Child)).rejects.toThrow(
+        /cannot create.*after teardown/i,
+      );
     });
   });
 });
