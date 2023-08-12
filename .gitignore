@@ -2,3 +2,4 @@ node_modules
 dist
 .direnv
 *.log
+tsconfig.vitest-temp.json

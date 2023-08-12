@@ -33,6 +33,7 @@
     "test": "./bin/run-tests",
     "test:lint": "eslint src --color",
     "test:unit": "vitest --color",
+    "test:types": "vitest typecheck --color",
     "test:fmt": "prettier --check src --color",
     "dev": "vite build --watch"
   },

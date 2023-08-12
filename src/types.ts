@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type ResourceContext from './resource-context';
 
 /**
@@ -6,15 +5,15 @@ import type ResourceContext from './resource-context';
  * and destroyed. Resources can own other resources, and destroying a parent
  * first tears down the children.
  */
-export interface ResourceFactory<Controls extends object> {
-  (resource: ResourceContext): Promise<Resource<Controls>>;
+export interface ResourceFactory<Value extends object> {
+  (resource: ResourceContext): Promise<Resource<Value>>;
 }
 
 export interface ParametrizedResourceFactory<
-  Controls extends object,
+  Value extends object,
   Args extends Array<unknown>,
 > {
-  (resource: ResourceContext, ...args: Args): Promise<Resource<Controls>>;
+  (resource: ResourceContext, ...args: Args): Promise<Resource<Value>>;
 }
 
 export interface Resource<Value extends object> {
@@ -24,3 +23,8 @@ export interface Resource<Value extends object> {
   /** A hook that gets called when the resource is destroyed. */
   destroy?(): Promise<unknown> | unknown;
 }
+
+/** The `value` type returned when creating a resource. */
+export type ResourceHandle<Factory extends ResourceFactory<object>> = Awaited<
+  ReturnType<Factory>
+>['value'];
