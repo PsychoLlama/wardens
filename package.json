@@ -29,7 +29,7 @@
     "framework"
   ],
   "scripts": {
-    "prepare": "tsc && vite build",
+    "prepack": "tsc && vite build",
     "test": "./bin/run-tests",
     "test:lint": "eslint src --color",
     "test:unit": "vitest --color",

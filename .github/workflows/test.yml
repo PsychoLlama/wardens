@@ -10,3 +10,4 @@ jobs:
       - uses: cachix/install-nix-action@v22
       - run: nix develop --command yarn install
       - run: nix develop --command yarn -s test
+      - run: nix develop --command yarn pack
