@@ -1,4 +1,4 @@
-import { create, ResourceHandle } from '../';
+import { create, ResourceContext, ResourceHandle } from '../';
 
 describe('Utility types', () => {
   describe('ResourceHandle', () => {
@@ -13,6 +13,19 @@ describe('Utility types', () => {
 
       expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>({
         hello: 'world',
+      });
+    });
+
+    it('infers the type when the value comes from a parameter', async () => {
+      async function Test(_ctx: ResourceContext, value: { count: number }) {
+        return {
+          value,
+        };
+      }
+
+      const test = await create(Test, { count: 2 });
+      expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>({
+        count: 2,
       });
     });
   });

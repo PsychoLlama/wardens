@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- Added support for parametrized resources in `ResourceHandle<T>`.
+
 ## [0.5.0]
 
 ### Changed

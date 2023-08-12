@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type ResourceContext from './resource-context';
 
 /**
@@ -25,6 +26,6 @@ export interface Resource<Value extends object> {
 }
 
 /** The `value` type returned when creating a resource. */
-export type ResourceHandle<Factory extends ResourceFactory<object>> = Awaited<
-  ReturnType<Factory>
->['value'];
+export type ResourceHandle<
+  Factory extends ParametrizedResourceFactory<object, Array<any>>,
+> = Awaited<ReturnType<Factory>>['value'];
