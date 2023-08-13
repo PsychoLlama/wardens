@@ -1,4 +1,5 @@
-import { create, destroy } from './allocation';
+import { createWithContext, destroy } from './allocation';
+import { ContextHandle, InheritedContext } from './inherited-context';
 import { RevokableResource } from './state';
 import { ResourceFactory, ParametrizedResourceFactory } from './types';
 
@@ -10,14 +11,17 @@ import { ResourceFactory, ParametrizedResourceFactory } from './types';
 export default class ResourceContext {
   #destroyed = new WeakSet<object>();
   #resources: Set<object>;
-  #freeze: RevokableResource['curfew'];
+  #curfew: RevokableResource['curfew'];
+  #state: InheritedContext;
 
   constructor(
+    state: InheritedContext,
     ownedResources: Set<object>,
     freeze: RevokableResource['curfew'],
   ) {
+    this.#state = state;
     this.#resources = ownedResources;
-    this.#freeze = freeze;
+    this.#curfew = freeze;
   }
 
   /** Provision an owned resource and make sure it doesn't outlive us. */
@@ -27,11 +31,12 @@ export default class ResourceContext {
       | ResourceFactory<Controls>,
     ...args: Args
   ): Promise<Controls> => {
-    if (this.#freeze.enforced) {
+    if (this.#curfew.enforced) {
       throw new Error('Cannot create new resources after teardown.');
     }
 
-    const controls = await create(factory, ...args);
+    const context = Object.create(this.#state);
+    const controls = await createWithContext(context, factory, ...args);
     this.#resources.add(controls);
 
     return controls;
@@ -53,5 +58,24 @@ export default class ResourceContext {
     this.#resources.delete(resource);
     this.#destroyed.add(resource);
     await destroy(resource);
+  };
+
+  /** Store a value in context. Anything down the chain can read it. */
+  public setContext = <Value>(
+    context: ContextHandle<Value>,
+    value: Value,
+  ): void => {
+    this.#state[ContextHandle.getId(context)] = value;
+  };
+
+  /** Retrieve a value from context, or a default if it is unset. */
+  public getContext = <Value>(context: ContextHandle<Value>): Value => {
+    const id = ContextHandle.getId(context);
+
+    if (id in this.#state) {
+      return this.#state[id] as Value;
+    }
+
+    return ContextHandle.getDefaultValue(context);
   };
 }

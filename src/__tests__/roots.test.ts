@@ -1,8 +1,8 @@
 import type ResourceContext from '../resource-context';
-import { create, destroy } from '../allocation';
+import { create, destroy } from '../roots';
 import bindContext from '../bind-context';
 
-describe('allocation', () => {
+describe('roots', () => {
   describe('create', () => {
     it('allocates the resource', async () => {
       const config = { test: 'init-args' };

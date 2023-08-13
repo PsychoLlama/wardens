@@ -1,25 +1,27 @@
 import { resources, constructed } from './state';
 import wrap from './proxy';
 import ResourceContext from './resource-context';
+import type { InheritedContext } from './inherited-context';
 import { ResourceFactory, ParametrizedResourceFactory } from './types';
 
 /** Provision a resource and return its external API. */
-export const create = async <
+export const createWithContext = async <
   Controls extends object,
   Args extends Array<unknown>,
 >(
-  provision:
+  state: InheritedContext,
+  factory:
     | ParametrizedResourceFactory<Controls, Args>
     | ResourceFactory<Controls>,
   ...args: Args
 ): Promise<Controls> => {
   const curfew = { enforced: false };
   const children: Set<object> = new Set();
-  const context = new ResourceContext(children, curfew);
-  let resource: Awaited<ReturnType<typeof provision>>;
+  const context = new ResourceContext(state, children, curfew);
+  let resource: Awaited<ReturnType<typeof factory>>;
 
   try {
-    resource = await provision(context, ...args);
+    resource = await factory(context, ...args);
   } catch (error) {
     // Resource could not be created. Clean up the intermediate resources.
     const orphans = Array.from(children).reverse();
