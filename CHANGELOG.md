@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - New context API carries state down the tree without plumbing through arguments.
 
+### Changed
+
+- Renamed public type `ResourceContext` to `ResourceControls`.
+
 ## [0.5.1] - 2023-08-12
 
 ### Fixed

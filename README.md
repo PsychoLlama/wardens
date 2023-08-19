@@ -30,7 +30,7 @@ Now define a pool that creates and manages workers:
 
 ```typescript
 async function WorkerPool(
-  { create }: ResourceContext,
+  { create }: ResourceControls,
   config: { poolSize: number },
 ) {
   const promises = Array(config.poolSize).fill(Worker).map(create);

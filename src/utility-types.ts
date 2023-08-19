@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type ResourceContext from './resource-context';
+import type ResourceControls from './resource-controls';
 
 /**
  * Represents an arbitrary stateful resource that is asynchronously provisioned
@@ -7,14 +7,14 @@ import type ResourceContext from './resource-context';
  * first tears down the children.
  */
 export interface ResourceFactory<Value extends object> {
-  (resource: ResourceContext): Promise<Resource<Value>>;
+  (resource: ResourceControls): Promise<Resource<Value>>;
 }
 
 export interface ParametrizedResourceFactory<
   Value extends object,
   Args extends Array<unknown>,
 > {
-  (resource: ResourceContext, ...args: Args): Promise<Resource<Value>>;
+  (resource: ResourceControls, ...args: Args): Promise<Resource<Value>>;
 }
 
 export interface Resource<Value extends object> {

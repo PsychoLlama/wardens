@@ -1,14 +1,14 @@
-import { createWithContext, destroy } from './allocation';
+import { createWithContext, destroy } from './resource-lifecycle';
 import { ContextHandle, InheritedContext } from './inherited-context';
-import { RevokableResource } from './state';
-import { ResourceFactory, ParametrizedResourceFactory } from './types';
+import { RevokableResource } from './global-weakrefs';
+import { ResourceFactory, ParametrizedResourceFactory } from './utility-types';
 
 /**
  * An instance of this class is passed to resources as they're being
  * provisioned. It allows them to provision other resources while keeping
  * track of ownership and lifetimes.
  */
-export default class ResourceContext {
+export default class ResourceControls {
   #destroyed = new WeakSet<object>();
   #resources: Set<object>;
   #curfew: RevokableResource['curfew'];
