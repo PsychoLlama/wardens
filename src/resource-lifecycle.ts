@@ -1,8 +1,8 @@
-import { resources, constructed } from './state';
-import wrap from './proxy';
-import ResourceContext from './resource-context';
+import { resources, constructed } from './global-weakrefs';
+import wrap from './wrap-with-proxy';
+import ResourceControls from './resource-controls';
 import type { InheritedContext } from './inherited-context';
-import { ResourceFactory, ParametrizedResourceFactory } from './types';
+import { ResourceFactory, ParametrizedResourceFactory } from './utility-types';
 
 /** Provision a resource and return its external API. */
 export const createWithContext = async <
@@ -17,7 +17,7 @@ export const createWithContext = async <
 ): Promise<Controls> => {
   const curfew = { enforced: false };
   const children: Set<object> = new Set();
-  const context = new ResourceContext(state, children, curfew);
+  const context = new ResourceControls(state, children, curfew);
   let resource: Awaited<ReturnType<typeof factory>>;
 
   try {

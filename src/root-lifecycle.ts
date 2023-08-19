@@ -1,6 +1,6 @@
-import { createWithContext } from './allocation';
-import { ParametrizedResourceFactory } from './types';
-import { ResourceFactory } from './types';
+import { createWithContext } from './resource-lifecycle';
+import { ParametrizedResourceFactory } from './utility-types';
+import { ResourceFactory } from './utility-types';
 
 /** Provision a resource and return its external API. */
 export const create = async <
@@ -19,4 +19,4 @@ export const create = async <
 
 // Destroying a root resource is the same process as destroying a child
 // resource. No need to change the implementation.
-export { destroy } from './allocation';
+export { destroy } from './resource-lifecycle';

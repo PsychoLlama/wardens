@@ -1,8 +1,8 @@
-import ResourceContext from '../resource-context';
+import ResourceControls from '../resource-controls';
 import { create } from '../';
 import { createContext } from '../inherited-context';
 
-describe('ResourceContext', () => {
+describe('ResourceControls', () => {
   async function Test() {
     return { value: {} };
   }
@@ -12,7 +12,7 @@ describe('ResourceContext', () => {
       value: { child: true },
     });
 
-    const Parent = async (resource: ResourceContext) => {
+    const Parent = async (resource: ResourceControls) => {
       return { value: await resource.create(Child) };
     };
 
@@ -27,7 +27,7 @@ describe('ResourceContext', () => {
       destroy: spy,
     });
 
-    const Parent = async (resource: ResourceContext) => {
+    const Parent = async (resource: ResourceControls) => {
       const child = await resource.create(Child);
       await resource.destroy(child);
 
@@ -43,7 +43,7 @@ describe('ResourceContext', () => {
   it('fails to destroy resources owned by someone else', async () => {
     const test = await create(Test);
 
-    const Sneaky = async (resource: ResourceContext) => {
+    const Sneaky = async (resource: ResourceControls) => {
       await resource.destroy(test);
       return { value: {} };
     };
@@ -52,7 +52,7 @@ describe('ResourceContext', () => {
   });
 
   it('binds create/destroy handlers to the class instance', async () => {
-    async function Allocator({ create, destroy }: ResourceContext) {
+    async function Allocator({ create, destroy }: ResourceControls) {
       const test = await create(Test);
       await destroy(test);
 
@@ -63,7 +63,7 @@ describe('ResourceContext', () => {
   });
 
   it('indicates if a resource was already destroyed', async () => {
-    async function Allocator(resource: ResourceContext) {
+    async function Allocator(resource: ResourceControls) {
       const test = await resource.create(Test);
       await resource.destroy(test);
       await resource.destroy(test);
@@ -77,7 +77,7 @@ describe('ResourceContext', () => {
   it('can set and retrieve context', async () => {
     const SharedValue = createContext(() => 'none');
 
-    const Test = async (resource: ResourceContext) => {
+    const Test = async (resource: ResourceControls) => {
       expect(resource.getContext(SharedValue)).toBe('none');
 
       resource.setContext(SharedValue, 'saved');
@@ -95,11 +95,11 @@ describe('ResourceContext', () => {
   it('passes context to child resources', async () => {
     const SharedValue = createContext<null | string>(() => null);
 
-    const Child = async (ctx: ResourceContext) => ({
+    const Child = async (ctx: ResourceControls) => ({
       value: { content: ctx.getContext(SharedValue) },
     });
 
-    const Parent = async (resource: ResourceContext) => {
+    const Parent = async (resource: ResourceControls) => {
       resource.setContext(SharedValue, 'inherited');
       return { value: await resource.create(Child) };
     };
@@ -109,7 +109,7 @@ describe('ResourceContext', () => {
 
   it('can override context without affecting the parent', async () => {
     const Message = createContext<null | string>(() => null);
-    const Child = async (resource: ResourceContext) => {
+    const Child = async (resource: ResourceControls) => {
       // This should *NOT* affect the parent context.
       resource.setContext(Message, 'child context');
 
@@ -118,7 +118,7 @@ describe('ResourceContext', () => {
       };
     };
 
-    const Parent = async (resource: ResourceContext) => {
+    const Parent = async (resource: ResourceControls) => {
       resource.setContext(Message, 'parent context');
       const child = await resource.create(Child);
 
@@ -140,7 +140,7 @@ describe('ResourceContext', () => {
 
   it('allows two siblings to have different context values', async () => {
     const Message = createContext<null | string>(() => null);
-    const Child = async (resource: ResourceContext, msg: string) => {
+    const Child = async (resource: ResourceControls, msg: string) => {
       resource.setContext(Message, msg);
 
       return {
@@ -148,7 +148,7 @@ describe('ResourceContext', () => {
       };
     };
 
-    const Parent = async (resource: ResourceContext) => {
+    const Parent = async (resource: ResourceControls) => {
       resource.setContext(Message, 'parent context');
 
       return {
@@ -166,11 +166,11 @@ describe('ResourceContext', () => {
 
   it('provides a live view of the current value, not just a snapshot', async () => {
     const Message = createContext(() => 'default');
-    const Child = async (resource: ResourceContext) => ({
+    const Child = async (resource: ResourceControls) => ({
       value: { getMessage: () => resource.getContext(Message) },
     });
 
-    const Parent = async (resource: ResourceContext) => ({
+    const Parent = async (resource: ResourceControls) => ({
       value: {
         setMessage: (msg: string) => resource.setContext(Message, msg),
         child: await resource.create(Child),
