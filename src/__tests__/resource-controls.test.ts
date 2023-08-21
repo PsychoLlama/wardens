@@ -92,6 +92,18 @@ describe('ResourceControls', () => {
     await expect(create(Test)).resolves.toEqual([]);
   });
 
+  it('returns the new context value', async () => {
+    const SharedValue = createContext(() => 'none');
+
+    const Test = async (resource: ResourceControls) => {
+      return {
+        value: { value: resource.setContext(SharedValue, 'returned') },
+      };
+    };
+
+    await expect(create(Test)).resolves.toEqual({ value: 'returned' });
+  });
+
   it('passes context to child resources', async () => {
     const SharedValue = createContext<null | string>(() => null);
 

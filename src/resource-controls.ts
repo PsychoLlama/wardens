@@ -64,8 +64,9 @@ export default class ResourceControls {
   public setContext = <Value>(
     context: ContextHandle<Value>,
     value: Value,
-  ): void => {
+  ): Value => {
     this.#state[ContextHandle.getId(context)] = value;
+    return value;
   };
 
   /** Retrieve a value from context, or a default if it is unset. */
