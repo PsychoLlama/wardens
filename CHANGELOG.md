@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Renamed public type `ResourceContext` to `ResourceControls`.
+- Renamed public type `ResourceContext` to `ResourceScope`.
 
 ## [0.5.1] - 2023-08-12
 

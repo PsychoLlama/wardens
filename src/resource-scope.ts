@@ -8,7 +8,7 @@ import { ResourceFactory, ParametrizedResourceFactory } from './utility-types';
  * provisioned. It allows them to provision other resources while keeping
  * track of ownership and lifetimes.
  */
-export default class ResourceControls {
+export default class ResourceScope {
   #destroyed = new WeakSet<object>();
   #resources: Set<object>;
   #curfew: RevokableResource['curfew'];

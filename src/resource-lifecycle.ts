@@ -1,6 +1,6 @@
 import { resources, constructed } from './global-weakrefs';
 import wrap from './wrap-with-proxy';
-import ResourceControls from './resource-controls';
+import ResourceScope from './resource-scope';
 import type { InheritedContext } from './inherited-context';
 import { ResourceFactory, ParametrizedResourceFactory } from './utility-types';
 
@@ -17,7 +17,7 @@ export const createWithContext = async <
 ): Promise<Controls> => {
   const curfew = { enforced: false };
   const children: Set<object> = new Set();
-  const context = new ResourceControls(state, children, curfew);
+  const context = new ResourceScope(state, children, curfew);
   let resource: Awaited<ReturnType<typeof factory>>;
 
   try {

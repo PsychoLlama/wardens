@@ -1,4 +1,4 @@
-import { create, ResourceControls, ResourceHandle } from '../';
+import { create, ResourceScope, ResourceHandle } from '../';
 
 describe('Utility types', () => {
   describe('ResourceHandle', () => {
@@ -17,7 +17,7 @@ describe('Utility types', () => {
     });
 
     it('infers the type when the value comes from a parameter', async () => {
-      async function Test(_ctx: ResourceControls, value: { count: number }) {
+      async function Test(_ctx: ResourceScope, value: { count: number }) {
         return {
           value,
         };

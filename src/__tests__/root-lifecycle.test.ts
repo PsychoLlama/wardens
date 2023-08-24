@@ -1,4 +1,4 @@
-import type ResourceControls from '../resource-controls';
+import type ResourceScope from '../resource-scope';
 import { create, destroy } from '../root-lifecycle';
 import bindContext from '../bind-context';
 
@@ -7,7 +7,7 @@ describe('roots', () => {
     it('allocates the resource', async () => {
       const config = { test: 'init-args' };
       const Test = vi.fn(
-        async (_resource: ResourceControls, config: { test: string }) => ({
+        async (_resource: ResourceScope, config: { test: string }) => ({
           value: config,
         }),
       );
@@ -22,7 +22,7 @@ describe('roots', () => {
         const First = async () => ({ value: [], destroy: () => spy('1st') });
         const Second = async () => ({ value: [], destroy: () => spy('2nd') });
 
-        const Parent = async (resource: ResourceControls) => {
+        const Parent = async (resource: ResourceScope) => {
           await resource.create(First);
           await resource.create(Second);
           throw new Error('Testing resource initialization errors');
@@ -42,7 +42,7 @@ describe('roots', () => {
           },
         });
 
-        const Parent = async (resource: ResourceControls) => {
+        const Parent = async (resource: ResourceScope) => {
           await resource.create(Child);
           await resource.create(Child);
           throw parentError;
@@ -89,7 +89,7 @@ describe('roots', () => {
     it('automatically unmounts all children', async () => {
       const spy = vi.fn();
       const Child = async () => ({ value: [], destroy: spy });
-      async function Parent(resource: ResourceControls) {
+      async function Parent(resource: ResourceScope) {
         await resource.create(Child);
         return { value: [] };
       }
@@ -109,7 +109,7 @@ describe('roots', () => {
         },
       });
 
-      const Parent = async (resource: ResourceControls) => {
+      const Parent = async (resource: ResourceScope) => {
         await resource.create(Child);
         return { value: [] };
       };
@@ -123,7 +123,7 @@ describe('roots', () => {
       const First = async () => ({ value: [], destroy: () => spy('1st') });
       const Second = async () => ({ value: [], destroy: () => spy('2nd') });
 
-      const Parent = async (resource: ResourceControls) => {
+      const Parent = async (resource: ResourceScope) => {
         await resource.create(First);
         await resource.create(Second);
         return { value: [] };
@@ -144,7 +144,7 @@ describe('roots', () => {
         },
       });
 
-      const Parent = async (resource: ResourceControls) => {
+      const Parent = async (resource: ResourceScope) => {
         await resource.create(Child);
         await resource.create(Child);
         return { value: [] };
@@ -158,7 +158,7 @@ describe('roots', () => {
 
     it('ensures child resources outlive their consumers', async () => {
       const Child = async () => ({ value: [1] });
-      const Parent = async (resource: ResourceControls) => {
+      const Parent = async (resource: ResourceScope) => {
         const child = await resource.create(Child);
         return {
           value: [],
@@ -176,7 +176,7 @@ describe('roots', () => {
     it('destroys child resources even if the parent fails to close', async () => {
       const spy = vi.fn();
       const Child = async () => ({ value: [], destroy: spy });
-      const Parent = async (resource: ResourceControls) => {
+      const Parent = async (resource: ResourceScope) => {
         await resource.create(Child);
         return {
           value: [],
@@ -202,7 +202,7 @@ describe('roots', () => {
         },
       });
 
-      const Parent = async (resource: ResourceControls) => {
+      const Parent = async (resource: ResourceScope) => {
         await resource.create(Child);
         return {
           value: [],
@@ -220,7 +220,7 @@ describe('roots', () => {
 
     it('guards against creating new resources after teardown', async () => {
       const Child = async () => ({ value: [] });
-      const Parent = async (resource: ResourceControls) => ({
+      const Parent = async (resource: ResourceScope) => ({
         value: bindContext(resource),
       });
 
