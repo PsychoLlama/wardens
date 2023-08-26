@@ -60,7 +60,7 @@ export const createWithContext = async <
 
 /**
  * Tear down the resource and all its children, permanently destroying the
- * reference.
+ * reference. This works on both root resources and child resources.
  */
 export const destroy = async (handle: object) => {
   if (!constructed.has(handle)) {

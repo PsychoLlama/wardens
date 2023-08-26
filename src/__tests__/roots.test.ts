@@ -1,5 +1,5 @@
 import type ResourceScope from '../resource-scope';
-import { create, destroy } from '../root-lifecycle';
+import { create, destroy } from '../';
 import bindContext from '../bind-context';
 
 describe('roots', () => {

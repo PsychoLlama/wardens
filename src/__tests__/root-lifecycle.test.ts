@@ -1,5 +1,5 @@
 import type ResourceScope from '../resource-scope';
-import { create, destroy } from '../root-lifecycle';
+import { create, destroy } from '../';
 import bindContext from '../bind-context';
 
 describe('roots', () => {
@@ -230,6 +230,19 @@ describe('roots', () => {
 
       await expect(resourceCreate(Child)).rejects.toThrow(
         /cannot create.*after teardown/i,
+      );
+    });
+
+    it('refuses to destroy non-root resources', async () => {
+      const Child = async () => ({ value: [] });
+      const Parent = async ({ create }: ResourceScope) => ({
+        value: { child: await create(Child) },
+      });
+
+      const { child } = await create(Parent);
+
+      await expect(destroy(child)).rejects.toThrow(
+        /cannot destroy child resource/i,
       );
     });
   });

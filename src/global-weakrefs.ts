@@ -10,6 +10,12 @@ export const resources = new WeakMap<object, RevokableResource>();
  */
 export const constructed = new WeakSet<object>();
 
+/**
+ * Indicates if an object is a root resource. This is used to prevent
+ * child resources from being destroyed by the root `destroy(...)` function.
+ */
+export const roots = new WeakSet<object>();
+
 export interface RevokableResource {
   resource: Resource<object>;
 
