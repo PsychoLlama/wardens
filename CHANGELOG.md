@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Renamed public type `ResourceContext` to `ResourceScope`.
 - `destroy(...)` is no longer allowed to destroy child resources, only roots.
+- Added tree-shaking metadata. This is useful for bundle analysis tools.
 
 ## [0.5.1] - 2023-08-12
 

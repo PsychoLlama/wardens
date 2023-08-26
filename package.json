@@ -9,6 +9,7 @@
   "repository": "git@github.com:PsychoLlama/wardens.git",
   "author": "Jesse Gibson <JesseTheGibson@gmail.com>",
   "license": "MIT",
+  "sideEffects": false,
   "exports": {
     ".": {
       "require": "./dist/wardens.cjs",
