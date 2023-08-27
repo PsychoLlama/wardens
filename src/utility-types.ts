@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ContextHandle } from './inherited-context';
 import type ResourceScope from './resource-scope';
 
 /**
@@ -29,3 +30,7 @@ export interface Resource<Value extends object> {
 export type ResourceHandle<
   Factory extends ParametrizedResourceFactory<object, Array<any>>,
 > = Awaited<ReturnType<Factory>>['value'];
+
+/** The type returned when you call `getContext`. */
+export type ContextType<Handle extends ContextHandle<unknown>> =
+  Handle extends ContextHandle<infer Value> ? Value : never;

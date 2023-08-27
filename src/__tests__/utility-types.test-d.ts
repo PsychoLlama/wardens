@@ -1,4 +1,10 @@
-import { create, ResourceScope, ResourceHandle } from '../';
+import {
+  create,
+  ResourceScope,
+  ResourceHandle,
+  createContext,
+  ContextType,
+} from '../';
 
 describe('Utility types', () => {
   describe('ResourceHandle', () => {
@@ -26,6 +32,24 @@ describe('Utility types', () => {
       const test = await create(Test, { count: 2 });
       expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>({
         count: 2,
+      });
+    });
+  });
+
+  describe('ContextType', () => {
+    it('returns the type contained in context', async () => {
+      const Context = createContext(() => ({
+        hello: 'world',
+      }));
+
+      async function Test({ getContext }: ResourceScope) {
+        return { value: getContext(Context) };
+      }
+
+      const value = await create(Test);
+
+      expectTypeOf(value).toEqualTypeOf<ContextType<typeof Context>>({
+        hello: 'any string, really',
       });
     });
   });
