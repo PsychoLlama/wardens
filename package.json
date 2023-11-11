@@ -84,7 +84,7 @@
     "@typescript-eslint/parser": "6.10.0",
     "eslint": "8.53.0",
     "husky": "8.0.3",
-    "lint-staged": "15.0.2",
+    "lint-staged": "15.1.0",
     "prettier": "2.8.8",
     "typescript": "5.2.2",
     "vite": "4.5.0",
