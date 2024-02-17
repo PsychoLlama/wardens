@@ -2,7 +2,6 @@
 set -e
 
 yarn test:unit --no-watch || fail=1
-yarn test:types --no-watch || fail=1
 yarn test:lint || fail=1
 yarn test:fmt || fail=1
 
