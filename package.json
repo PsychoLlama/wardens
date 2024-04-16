@@ -86,7 +86,7 @@
     "lint-staged": "15.2.2",
     "prettier": "2.8.8",
     "typescript": "5.4.5",
-    "vite": "5.2.8",
+    "vite": "5.2.9",
     "vitest": "^1.0.0"
   }
 }
