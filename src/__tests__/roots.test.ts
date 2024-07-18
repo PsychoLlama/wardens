@@ -58,7 +58,7 @@ describe('roots', () => {
 
   describe('destroy', () => {
     it('deallocates the resource', async () => {
-      const spy = vi.fn<[], void>();
+      const spy = vi.fn<() => void>();
       const Test = async () => ({
         value: {},
         destroy: spy,
