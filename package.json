@@ -52,40 +52,15 @@
     "singleQuote": true,
     "trailingComma": "all"
   },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "sourceType": "module"
-    },
-    "overrides": [
-      {
-        "files": [
-          "./**/__tests__/*.ts{x,}"
-        ],
-        "rules": {
-          "@typescript-eslint/no-explicit-any": "off"
-        }
-      }
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-      "@typescript-eslint/explicit-module-boundary-types": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/no-unused-vars": "error",
-      "no-prototype-builtins": "off"
-    }
-  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "7.2.0",
-    "@typescript-eslint/parser": "7.2.0",
-    "eslint": "8.57.0",
+    "@eslint/js": "^9.7.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^9.7.0",
     "husky": "9.1.1",
     "lint-staged": "15.2.7",
     "prettier": "2.8.8",
     "typescript": "5.5.3",
+    "typescript-eslint": "^7.16.1",
     "vite": "5.3.4",
     "vitest": "^1.0.0"
   }
