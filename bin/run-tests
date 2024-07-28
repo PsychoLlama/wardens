@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-yarn test:unit --no-watch || fail=1
-yarn test:lint || fail=1
-yarn test:fmt || fail=1
+npm run test:unit -- --no-watch || fail=1
+npm run test:lint || fail=1
+npm run test:fmt || fail=1
 
 if [[ -n "$fail" ]]; then
   exit 1

@@ -18,14 +18,6 @@
       );
     in
     {
-      devShell = eachSystem (
-        system: pkgs:
-        pkgs.mkShell {
-          packages = [
-            pkgs.nodejs
-            pkgs.yarn
-          ];
-        }
-      );
+      devShell = eachSystem (system: pkgs: pkgs.mkShell { packages = [ pkgs.nodejs ]; });
     };
 }
