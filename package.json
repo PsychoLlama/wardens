@@ -1,6 +1,6 @@
 {
   "name": "wardens",
-  "version": "0.6.0-rc.4",
+  "version": "0.5.1",
   "description": "A framework for resource management",
   "type": "module",
   "main": "./dist/wardens.cjs",
@@ -31,11 +31,13 @@
   ],
   "scripts": {
     "prepack": "tsc && vite build",
-    "test": "./bin/run-tests",
+    "test": "./scripts/run-tests",
     "test:lint": "eslint src --color",
     "test:unit": "vitest --color --typecheck",
     "test:fmt": "prettier --check src --color",
-    "dev": "vite build --watch"
+    "print-pkg-version": "echo ${npm_package_version}",
+    "release:candidate": "./scripts/publish-rc",
+    "release:stable": "./scripts/publish-stable"
   },
   "husky": {
     "hooks": {
