@@ -5,7 +5,7 @@ import { builtinModules } from 'module';
 export default defineConfig({
   build: {
     lib: {
-      entry: path.join(__dirname, './src/index.ts'),
+      entry: path.join(import.meta.dirname, './src/index.ts'),
       fileName: 'wardens',
       formats: ['es', 'cjs'],
     },
