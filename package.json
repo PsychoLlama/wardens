@@ -34,7 +34,7 @@
     "test": "./scripts/run-tests",
     "test:lint": "eslint src --color",
     "test:unit": "vitest --color --typecheck",
-    "test:fmt": "prettier --check src --color",
+    "test:fmt": "treefmt --ci",
     "print-pkg-version": "echo ${npm_package_version}",
     "release:candidate": "./scripts/publish-rc",
     "release:stable": "./scripts/publish-stable"
