@@ -1,7 +1,7 @@
 <div align="center">
   <h1>Wardens</h1>
   <p>A tiny framework for managing resources.</p>
-  <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/PsychoLlama/wardens/test.yml?branch=main" />
+  <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/PsychoLlama/wardens/main.yml?branch=main" />
   <img alt="TypeScript" src="https://img.shields.io/npm/types/wardens" />
   <img alt="npm version" src="https://img.shields.io/npm/v/wardens" />
 </div>
