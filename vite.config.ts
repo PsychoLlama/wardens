@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: builtinModules,
+      external: [...builtinModules],
     },
   },
 });

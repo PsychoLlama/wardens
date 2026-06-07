@@ -25,7 +25,10 @@
       devShells = eachSystem (
         system: pkgs: {
           default = pkgs.mkShell {
-            packages = [ pkgs.nodejs ];
+            packages = [
+              pkgs.nodejs
+              pkgs.pnpm
+            ];
           };
         }
       );

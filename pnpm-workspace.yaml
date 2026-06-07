@@ -1,0 +1,5 @@
+# Dependencies allowed to run install/build lifecycle scripts. pnpm blocks
+# these by default; esbuild's postinstall links its platform-native binary,
+# which Vite and Vitest need.
+allowBuilds:
+  esbuild: true
