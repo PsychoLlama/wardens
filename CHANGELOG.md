@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - New context API carries state down the tree without plumbing through arguments.
 - New `ContextType<Handle>` utility type which gets the value type of a context.
+- Integrates with `Symbol.asyncDispose` for `await using` syntax.
 
 ### Changed
 

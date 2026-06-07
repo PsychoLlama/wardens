@@ -14,7 +14,7 @@ export const createWithContext = async <
     | ParametrizedResourceFactory<Controls, Args>
     | ResourceFactory<Controls>,
   ...args: Args
-): Promise<Controls> => {
+): Promise<Controls & AsyncDisposable> => {
   const curfew = { enforced: false };
   const children: Set<object> = new Set();
   const context = new ResourceScope(state, children, curfew);
@@ -45,7 +45,9 @@ export const createWithContext = async <
   }
 
   const controls = resource.value;
-  const { proxy, revoke } = wrap(controls);
+
+  // `destroy` backs the handle's `Symbol.asyncDispose`, enabling `await using`.
+  const { proxy, revoke } = wrap(controls, destroy);
 
   constructed.add(proxy);
   resources.set(proxy, {

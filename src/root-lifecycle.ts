@@ -13,7 +13,7 @@ export const createRoot = async <
     | ParametrizedResourceFactory<Controls, Args>
     | ResourceFactory<Controls>,
   ...args: Args
-): Promise<Controls> => {
+): Promise<Controls & AsyncDisposable> => {
   const rootContext = Object.create(null);
   const root = await createWithContext(rootContext, factory, ...args);
   roots.add(root);

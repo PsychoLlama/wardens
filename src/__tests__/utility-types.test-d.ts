@@ -17,9 +17,7 @@ describe('Utility types', () => {
 
       const test = await create(Test);
 
-      expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>({
-        hello: 'world',
-      });
+      expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>();
     });
 
     it('infers the type when the value comes from a parameter', async () => {
@@ -30,9 +28,7 @@ describe('Utility types', () => {
       }
 
       const test = await create(Test, { count: 2 });
-      expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>({
-        count: 2,
-      });
+      expectTypeOf(test).toEqualTypeOf<ResourceHandle<typeof Test>>();
     });
   });
 
@@ -48,9 +44,9 @@ describe('Utility types', () => {
 
       const value = await create(Test);
 
-      expectTypeOf(value).toEqualTypeOf<ContextType<typeof Context>>({
-        hello: 'any string, really',
-      });
+      expectTypeOf(value).toEqualTypeOf<
+        ContextType<typeof Context> & AsyncDisposable
+      >();
     });
   });
 });

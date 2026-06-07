@@ -30,7 +30,7 @@ export default class ResourceScope {
       | ParametrizedResourceFactory<Controls, Args>
       | ResourceFactory<Controls>,
     ...args: Args
-  ): Promise<Controls> => {
+  ): Promise<Controls & AsyncDisposable> => {
     if (this.#curfew.enforced) {
       throw new Error('Cannot create new resources after teardown.');
     }

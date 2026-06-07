@@ -18,7 +18,27 @@
  *
  * The bind-context utility is exposed as a workaround. Alternatively, you can
  * export a wrapping object instead: `{ value: T }`.
+ *
+ * The proxy also synthesizes a `Symbol.asyncDispose` method so resources can
+ * be managed with `await using`. It tears the resource down through the given
+ * `destroy` function (injected to avoid a circular import). We intercept the
+ * property here rather than writing it onto the resource value to avoid
+ * mutating user objects.
  */
-export default function wrapWithProxy<T extends object>(value: T) {
-  return Proxy.revocable(value, {});
+export default function wrapWithProxy<T extends object>(
+  value: T,
+  destroy: (handle: object) => Promise<void>,
+) {
+  const { proxy, revoke } = Proxy.revocable(value, {
+    get(target, property, receiver) {
+      if (property === Symbol.asyncDispose) {
+        return () => destroy(receiver);
+      }
+
+      return Reflect.get(target, property, receiver);
+    },
+  });
+
+  // The `get` trap adds `Symbol.asyncDispose`, which the proxy type can't see.
+  return { proxy: proxy as T & AsyncDisposable, revoke };
 }

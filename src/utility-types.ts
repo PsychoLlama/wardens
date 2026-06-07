@@ -26,10 +26,13 @@ export interface Resource<Value extends object> {
   destroy?(): Promise<unknown> | unknown;
 }
 
-/** The `value` type returned when creating a resource. */
+/**
+ * The handle returned when creating a resource: the factory's `value`,
+ * augmented with `Symbol.asyncDispose` so it can be managed with `await using`.
+ */
 export type ResourceHandle<
   Factory extends ParametrizedResourceFactory<object, Array<any>>,
-> = Awaited<ReturnType<Factory>>['value'];
+> = Awaited<ReturnType<Factory>>['value'] & AsyncDisposable;
 
 /** The type returned when you call `getContext`. */
 export type ContextType<Handle extends ContextHandle<unknown>> =
