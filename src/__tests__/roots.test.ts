@@ -50,7 +50,7 @@ describe('roots', () => {
 
         await expect(create(Parent)).rejects.toMatchObject({
           cause: parentError,
-          failures: [childError, childError],
+          errors: [childError, childError],
         });
       });
     });
@@ -152,7 +152,7 @@ describe('roots', () => {
 
       const parent = await create(Parent);
       await expect(destroy(parent)).rejects.toMatchObject({
-        failures: [childError, childError],
+        errors: [childError, childError],
       });
     });
 
@@ -214,7 +214,7 @@ describe('roots', () => {
 
       const parent = await create(Parent);
       await expect(destroy(parent)).rejects.toMatchObject({
-        failures: [parentError, childError],
+        errors: [parentError, childError],
       });
     });
 

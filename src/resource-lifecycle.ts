@@ -116,18 +116,9 @@ export const destroy = async (handle: object) => {
 const reduceToSingleError = (errors: Array<Error>, options?: ErrorOptions) => {
   return errors.length === 1
     ? errors[0]
-    : new BulkDestroyError(errors, options);
+    : new AggregateError(
+        errors,
+        'Some resources could not be destroyed.',
+        options,
+      );
 };
-
-/** Happens when 2 or more child resources cannot be destroyed. */
-class BulkDestroyError extends Error {
-  constructor(
-    public failures: Array<unknown>,
-    options?: ErrorOptions,
-  ) {
-    super(
-      'Some resources could not be destroyed. See the `failures` property for details.',
-      options,
-    );
-  }
-}
